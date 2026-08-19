@@ -1,0 +1,108 @@
+---
+title: "Separator: Horizontal and Vertical Visual Dividers"
+sidebarTitle: "Separator"
+description: "Separator renders a thin horizontal or vertical line to visually divide sections of content. Supports orientation and decorative props via Base UI."
+---
+
+Separator renders a thin `1px` rule that visually or semantically divides content areas. It is built directly on `@base-ui/react/separator` and forwards all Base UI props, including `orientation` for horizontal or vertical layout, and `decorative` for cases where the divider is purely presentational and should be hidden from assistive technology.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add separator
+```
+
+```bash Manual
+npm install @base-ui/react
+# Then copy the component source into components/ui/separator.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { Separator } from "@/components/ui/separator"
+```
+
+```tsx
+<Separator />
+```
+
+## Examples
+
+### Horizontal
+
+A full-width horizontal rule — the default orientation.
+
+```tsx
+import { Separator } from "@/components/ui/separator"
+
+export function SeparatorHorizontal() {
+  return (
+    <div className="space-y-4">
+      <p className="text-sm">Section one content goes here.</p>
+      <Separator />
+      <p className="text-sm">Section two content goes here.</p>
+    </div>
+  )
+}
+```
+
+### Vertical
+
+Use `orientation="vertical"` inside a flex container to divide items side by side.
+
+```tsx
+import { Separator } from "@/components/ui/separator"
+
+export function SeparatorVertical() {
+  return (
+    <div className="flex h-5 items-center gap-3 text-sm">
+      <span>Blog</span>
+      <Separator orientation="vertical" />
+      <span>Docs</span>
+      <Separator orientation="vertical" />
+      <span>Source</span>
+    </div>
+  )
+}
+```
+
+### Decorative
+
+Pass `decorative` when the separator is purely visual and should be ignored by screen readers.
+
+```tsx
+import { Separator } from "@/components/ui/separator"
+
+export function SeparatorDecorative() {
+  return (
+    <div className="space-y-3">
+      <h3 className="text-sm font-medium">Recent files</h3>
+      <Separator decorative />
+      <ul className="space-y-1 text-sm text-muted-foreground">
+        <li>design-tokens.json</li>
+        <li>button.tsx</li>
+        <li>card.tsx</li>
+      </ul>
+    </div>
+  )
+}
+```
+
+<Note>
+  When the divider conveys a meaningful structural boundary — such as separating sections of a form — omit `decorative` so assistive technology can announce the separation to users navigating by keyboard.
+</Note>
+
+## Props
+
+### Separator
+
+All props are forwarded to `SeparatorPrimitive` from `@base-ui/react/separator`.
+
+| Prop          | Type                           | Default        | Description                                                               |
+| ------------- | ------------------------------ | -------------- | ------------------------------------------------------------------------- |
+| `orientation` | `"horizontal" \| "vertical"`   | `"horizontal"` | Direction of the dividing line                                            |
+| `decorative`  | `boolean`                      | `false`        | When `true`, hides the element from the accessibility tree                |
+| `className`   | `string`                       | —              | Additional Tailwind classes to override color, thickness, or spacing      |

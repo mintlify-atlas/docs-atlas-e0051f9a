@@ -1,0 +1,105 @@
+---
+title: "Textarea Component: Multi-line Text Input Field"
+sidebarTitle: "Textarea"
+description: "Textarea renders a multi-line text input with consistent styling and states. Supports disabled, error, and readonly states and pairs well with the Field component."
+---
+
+The `Textarea` component provides a styled multi-line text input that shares the same border, focus ring, and error-state tokens as `Input`. It supports `sm`, `default`, and `lg` sizes and can grow with its content via CSS `field-sizing-content`.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add textarea
+```
+
+```bash Manual
+# No additional dependencies required beyond Tailwind CSS v4
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/textarea.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import { Textarea } from "@/components/ui/textarea"
+```
+
+```tsx
+<Textarea placeholder="Write something..." />
+```
+
+## Examples
+
+### Sizes
+
+Three sizes match the rest of the form component family.
+
+```tsx
+import { Textarea } from "@/components/ui/textarea"
+
+export function TextareaSizes() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Textarea size="sm" placeholder="Small textarea" />
+      <Textarea placeholder="Default textarea" />
+      <Textarea size="lg" placeholder="Large textarea" />
+    </div>
+  )
+}
+```
+
+### Auto-resize
+
+Add `className="field-sizing-content"` to let the textarea grow with its content, eliminating the scrollbar for moderate amounts of text.
+
+```tsx
+import { Textarea } from "@/components/ui/textarea"
+
+export function TextareaAutoResize() {
+  return (
+    <Textarea
+      className="field-sizing-content"
+      placeholder="Grows as you type..."
+    />
+  )
+}
+```
+
+### With Field for validation
+
+`Textarea` participates in the `Field` context just like `Input`, giving you an accessible label and inline errors for free.
+
+```tsx
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field"
+import { Textarea } from "@/components/ui/textarea"
+
+export function TextareaWithField() {
+  return (
+    <Field name="bio">
+      <FieldLabel>Bio</FieldLabel>
+      <Textarea
+        placeholder="Tell us about yourself"
+        required
+        maxLength={300}
+      />
+      <FieldDescription>Keep it under 300 characters.</FieldDescription>
+      <FieldError match="valueMissing">Bio is required.</FieldError>
+    </Field>
+  )
+}
+```
+
+## API
+
+### Textarea
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Padding and min-height scale of the textarea |
+| `unstyled` | `boolean` | `false` | Strip the outer wrapper styles for use inside `InputGroup` |
+
+All standard HTML `<textarea>` attributes (`rows`, `cols`, `disabled`, `readOnly`, `required`, `placeholder`, `value`, `defaultValue`, `onChange`, etc.) are forwarded to the underlying element.

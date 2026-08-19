@@ -1,0 +1,173 @@
+---
+title: "NumberField: Spin Button Input for Numeric Values"
+sidebarTitle: "NumberField"
+description: "NumberField renders a numeric input with increment and decrement buttons, built on Base UI's NumberField primitive. Supports min, max, step, and format options."
+---
+
+`NumberField` composes Base UI's `NumberField` primitive into a styled spin-button input with decrement and increment buttons. A `NumberFieldScrubArea` wraps the label so users can click-and-drag to scrub through values. The component supports `min`, `max`, `step`, locale-aware number formatting, and three size variants.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add number-field
+```
+
+```bash Manual
+npm install @base-ui/react class-variance-authority lucide-react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/number-field.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+  NumberFieldScrubArea,
+} from "@/components/ui/number-field"
+```
+
+```tsx
+<NumberField defaultValue={25} min={0} max={100}>
+  <NumberFieldScrubArea label="Amount" />
+  <NumberFieldGroup>
+    <NumberFieldDecrement />
+    <NumberFieldInput />
+    <NumberFieldIncrement />
+  </NumberFieldGroup>
+</NumberField>
+```
+
+## Examples
+
+### With min, max, and step
+
+Constrain the value range and snap to discrete increments.
+
+```tsx
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+  NumberFieldScrubArea,
+} from "@/components/ui/number-field"
+
+export function NumberFieldConstrained() {
+  return (
+    <NumberField defaultValue={10} min={0} max={100} step={5}>
+      <NumberFieldScrubArea label="Quantity" />
+      <NumberFieldGroup>
+        <NumberFieldDecrement />
+        <NumberFieldInput />
+        <NumberFieldIncrement />
+      </NumberFieldGroup>
+    </NumberField>
+  )
+}
+```
+
+### Currency format
+
+Pass `format={{ style: "currency", currency: "USD" }}` to display the value as a formatted currency string. The raw numeric value is still stored internally.
+
+```tsx
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+  NumberFieldScrubArea,
+} from "@/components/ui/number-field"
+
+export function NumberFieldCurrency() {
+  return (
+    <NumberField
+      defaultValue={1499}
+      min={0}
+      step={50}
+      format={{ style: "currency", currency: "USD" }}
+    >
+      <NumberFieldScrubArea label="Price" />
+      <NumberFieldGroup>
+        <NumberFieldDecrement />
+        <NumberFieldInput />
+        <NumberFieldIncrement />
+      </NumberFieldGroup>
+    </NumberField>
+  )
+}
+```
+
+### Sizes
+
+All sub-components inherit the `size` from the parent `NumberField`. Override on individual components as needed.
+
+```tsx
+import {
+  NumberField,
+  NumberFieldGroup,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+  NumberFieldScrubArea,
+} from "@/components/ui/number-field"
+
+export function NumberFieldSizes() {
+  return (
+    <div className="flex flex-col gap-3">
+      {(["sm", "default", "lg"] as const).map((size) => (
+        <NumberField key={size} defaultValue={0} size={size}>
+          <NumberFieldScrubArea label={size} />
+          <NumberFieldGroup>
+            <NumberFieldDecrement />
+            <NumberFieldInput />
+            <NumberFieldIncrement />
+          </NumberFieldGroup>
+        </NumberField>
+      ))}
+    </div>
+  )
+}
+```
+
+## API
+
+### NumberField
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `number` | — | Controlled numeric value |
+| `defaultValue` | `number` | — | Uncontrolled initial value |
+| `onValueChange` | `(value: number) => void` | — | Fires when the value changes |
+| `min` | `number` | — | Minimum allowed value |
+| `max` | `number` | — | Maximum allowed value |
+| `step` | `number` | `1` | Increment/decrement amount per click or arrow key |
+| `largeStep` | `number` | `10` | Step used when holding Shift while pressing arrow keys |
+| `format` | `Intl.NumberFormatOptions` | — | Locale-aware number format options (e.g. `{ style: "currency", currency: "USD" }`) |
+| `disabled` | `boolean` | `false` | Disables the entire field |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Height and font-size scale shared with all child components via context |
+
+### NumberFieldScrubArea
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | required | Accessible label text and visible label for the scrub cursor region |
+
+### NumberFieldGroup, NumberFieldDecrement, NumberFieldIncrement, NumberFieldInput
+
+All four components inherit `size` from the parent `NumberField` context. Pass `size` directly to any of them to override locally.
+
+<Note>
+  `NumberFieldGroup`, `NumberFieldDecrement`, `NumberFieldIncrement`, and `NumberFieldInput` all inherit `size` from the parent `NumberField` context automatically. You only need to pass `size` to `NumberField` itself.
+</Note>

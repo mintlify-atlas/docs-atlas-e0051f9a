@@ -1,0 +1,128 @@
+---
+title: "Badge Component: Status Labels and Tag Indicators"
+sidebarTitle: "Badge"
+description: "Badge renders a small status label in multiple visual variants. Use it for counts, states, categories, and contextual indicators alongside other UI elements."
+---
+
+Badge is a compact inline element for surfacing status, category, or count information at a glance. It uses Base UI's `useRender` hook so the underlying element is swappable, and `class-variance-authority` drives thirteen color variants, three sizes, and two shape options — making it straightforward to match any design token in your system.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add badge
+```
+
+```bash Manual
+npm install class-variance-authority
+# Then copy the component source into components/ui/badge.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+```
+
+```tsx
+<Badge variant="success">Active</Badge>
+```
+
+## Examples
+
+### Variants
+
+Thirteen variants cover brand, semantic feedback, and subtle outline styles.
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+
+export function BadgeVariants() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Badge variant="default">Default</Badge>
+      <Badge variant="primary">Primary</Badge>
+      <Badge variant="primary-outline">Primary Outline</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="ghost">Ghost</Badge>
+      <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="success">Success</Badge>
+      <Badge variant="success-outline">Success Outline</Badge>
+      <Badge variant="warning">Warning</Badge>
+      <Badge variant="warning-outline">Warning Outline</Badge>
+      <Badge variant="info">Info</Badge>
+      <Badge variant="info-outline">Info Outline</Badge>
+    </div>
+  )
+}
+```
+
+### Sizes
+
+Three sizes let you match badges to the surrounding text or control density.
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+
+export function BadgeSizes() {
+  return (
+    <div className="flex items-center gap-2">
+      <Badge size="sm">Small</Badge>
+      <Badge size="default">Default</Badge>
+      <Badge size="lg">Large</Badge>
+    </div>
+  )
+}
+```
+
+### Pill Shape
+
+Use `shape="pill"` to get fully rounded badge corners — great for counts or tag-style labels.
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+
+export function BadgePill() {
+  return (
+    <div className="flex gap-2">
+      <Badge shape="pill" variant="primary">12</Badge>
+      <Badge shape="pill" variant="success-outline">Verified</Badge>
+      <Badge shape="pill" variant="warning">Beta</Badge>
+    </div>
+  )
+}
+```
+
+### Inline with Text
+
+Badges work naturally alongside headings, table cells, and list items.
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+
+export function BadgeInline() {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-medium">Order #1042</span>
+      <Badge variant="info">Processing</Badge>
+    </div>
+  )
+}
+```
+
+<Tip>
+  When displaying numeric counts that might exceed two digits, prefer `shape="pill"` and `size="sm"` to keep the label compact.
+</Tip>
+
+## Props
+
+### Badge
+
+| Prop      | Type                                                                                                                                                                                                   | Default     | Description                                                            |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------- |
+| `variant` | `"default" \| "primary" \| "primary-outline" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "success" \| "success-outline" \| "warning" \| "warning-outline" \| "info" \| "info-outline"` | `"default"` | Color and fill style of the badge                                      |
+| `size`    | `"sm" \| "default" \| "lg"`                                                                                                                                                                            | `"default"` | Height and font size of the badge                                      |
+| `shape`   | `"default" \| "pill"`                                                                                                                                                                                  | `"default"` | Border radius — `"default"` is `rounded-md`, `"pill"` is fully rounded |
+| `render`  | `React.ReactElement`                                                                                                                                                                                   | —           | Replace the underlying `<span>` element while preserving all props     |

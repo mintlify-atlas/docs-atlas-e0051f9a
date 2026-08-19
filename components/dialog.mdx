@@ -1,0 +1,234 @@
+---
+title: "Dialog: Modal Overlay with Accessible Focus Management"
+sidebarTitle: "Dialog"
+description: "Dialog renders a modal window with focus trap and aria attributes managed by Base UI. Supports multiple sizes, fullscreen variant, and composable sub-components."
+---
+
+Dialog is a fully accessible modal overlay built on Base UI's `Dialog` primitive. It traps focus inside the panel while it's open, manages `aria-modal` and `aria-labelledby` attributes automatically, and animates in and out using Tailwind CSS v4 data-attribute transitions. Because it renders into a dedicated portal, it sits above all page content without any manual z-index tuning. Use it for confirmations, forms, settings panels, or any interaction that requires the user's full attention before returning to the page.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add dialog
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react class-variance-authority
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install the packages manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/dialog.tsx` from the repository into your project.
+  </Step>
+  <Step title="Update import paths">
+    Adjust the `@/` alias in the component file to match your project's path configuration.
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+```
+
+## Usage
+
+```tsx
+<Dialog>
+  <DialogTrigger render={<Button variant="outline">Open dialog</Button>} />
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Confirm action</DialogTitle>
+      <DialogDescription>This cannot be undone.</DialogDescription>
+    </DialogHeader>
+    <DialogBody>Dialog content goes here.</DialogBody>
+    <DialogFooter showCloseButton>
+      <Button>Confirm</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+<Note>
+  Base UI uses a `render` prop instead of `asChild`. Pass your custom trigger element to `DialogTrigger` via `render={<Button />}` — never wrap it as a child with `asChild`.
+</Note>
+
+## Examples
+
+### Controlled dialog with form
+
+Open a dialog containing a form, then close it programmatically after submission.
+
+```tsx
+import { useState } from "react"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+export function DialogFormExample() {
+  const [open, setOpen] = useState(false)
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    // process form …
+    setOpen(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={<Button variant="outline">Edit profile</Button>} />
+      <DialogContent size="md">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            Update your display name and email address.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <form id="profile-form" onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" placeholder="Your name" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" placeholder="you@example.com" />
+            </div>
+          </form>
+        </DialogBody>
+        <DialogFooter showCloseButton>
+          <Button type="submit" form="profile-form">
+            Save changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+### Fullscreen dialog
+
+Use `variant="fullscreen"` for a dialog that fills the viewport — ideal for immersive editors or detail views.
+
+```tsx
+<Dialog>
+  <DialogTrigger render={<Button variant="outline">Open fullscreen</Button>} />
+  <DialogContent variant="fullscreen">
+    <DialogHeader>
+      <DialogTitle>Document editor</DialogTitle>
+      <DialogDescription>Full-screen editing mode.</DialogDescription>
+    </DialogHeader>
+    <DialogBody>
+      <p>Rich content or an editor component goes here.</p>
+    </DialogBody>
+    <DialogFooter showCloseButton>
+      <Button>Save</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+### Dialog with toast notification
+
+Trigger a toast from inside a dialog. Because Dialog and Toast each use independent portal layers managed by Base UI, they never interfere with each other — the toast animates in while the dialog remains open.
+
+```tsx
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/toast"
+
+export function DialogWithToastExample() {
+  const { add } = useToast()
+
+  return (
+    <Dialog>
+      <DialogTrigger render={<Button variant="outline">Open</Button>} />
+      <DialogContent size="sm">
+        <DialogHeader>
+          <DialogTitle>Publish post</DialogTitle>
+          <DialogDescription>This will make your post publicly visible.</DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <p>Are you ready to publish?</p>
+        </DialogBody>
+        <DialogFooter showCloseButton>
+          <Button
+            onClick={() =>
+              add({ title: "Published!", type: "success", timeout: 4000 })
+            }
+          >
+            Publish
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+<Tip>
+  Toast works seamlessly inside Dialog — they use independent overlay systems so there are no z-index conflicts or focus management issues.
+</Tip>
+
+## API Reference
+
+### DialogContent
+
+| Prop              | Type                                                                                             | Default     | Description                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------ | ----------- | ------------------------------------------------------------------------ |
+| `variant`         | `"default" \| "fullscreen"`                                                                      | `"default"` | Centered modal or fullscreen inset layout                                |
+| `size`            | `"xs" \| "sm" \| "md" \| "lg" \| "xl" \| "2xl" \| "3xl" \| "4xl" \| "5xl" \| "6xl" \| "7xl"` | `"lg"`      | Max-width breakpoint of the centered dialog (ignored for `"fullscreen"`) |
+| `showCloseButton` | `boolean`                                                                                        | `true`      | Render the default × close button in the top-right corner                |
+| `noPadding`       | `boolean`                                                                                        | `false`     | Remove the default `p-6` padding from the popup surface                  |
+
+### DialogFooter
+
+| Prop              | Type      | Default | Description                                           |
+| ----------------- | --------- | ------- | ----------------------------------------------------- |
+| `showCloseButton` | `boolean` | `false` | Append a Close button (outline variant) to the footer |
+
+### DialogTrigger
+
+Accepts all Base UI `Dialog.Trigger` props. Use the `render` prop to render a custom element as the trigger — this is the Base UI pattern and replaces `asChild`.
+
+### DialogClose
+
+Accepts all Base UI `Dialog.Close` props. Use `render` to render a custom close element anywhere inside the dialog content.

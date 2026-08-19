@@ -1,0 +1,108 @@
+---
+title: "Input Component: Text Fields with Addons and States"
+sidebarTitle: "Input"
+description: "Input renders a styled text field with support for disabled, error, and readonly states. Pairs with Field for labels, validation messages, and descriptions."
+---
+
+The `Input` component wraps Base UI's `Input` primitive in a styled container that handles focus rings, error borders, disabled opacity, and dark-mode surface colors automatically. It exposes size variants and an `unstyled` escape hatch for use inside `InputGroup` compositions.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add input
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/input.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import { Input } from "@/components/ui/input"
+```
+
+```tsx
+<Input placeholder="Email address" type="email" />
+```
+
+## Examples
+
+### Sizes
+
+`Input` ships in three sizes. Use `size="sm"` for compact forms, `"default"` / `"md"` for standard layouts, and `"lg"` for prominent search fields or hero inputs.
+
+```tsx
+import { Input } from "@/components/ui/input"
+
+export function InputSizes() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Input size="sm" placeholder="Small input" />
+      <Input size="md" placeholder="Default input" />
+      <Input size="lg" placeholder="Large input" />
+    </div>
+  )
+}
+```
+
+### Disabled and read-only states
+
+Pass the native `disabled` or `readOnly` attribute. The wrapper applies `opacity-64` and removes pointer events automatically.
+
+```tsx
+import { Input } from "@/components/ui/input"
+
+export function InputStates() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Input placeholder="Normal" />
+      <Input placeholder="Disabled" disabled />
+      <Input defaultValue="Read only value" readOnly />
+    </div>
+  )
+}
+```
+
+### With Field for validation
+
+Wrap `Input` in `Field` to get an accessible label, description, and inline error message wired up via `aria-describedby` automatically.
+
+```tsx
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+
+export function InputWithField() {
+  return (
+    <Field name="email">
+      <FieldLabel>Email address</FieldLabel>
+      <Input type="email" placeholder="you@example.com" required />
+      <FieldDescription>We'll never share your email.</FieldDescription>
+      <FieldError match="typeMismatch">Please enter a valid email address.</FieldError>
+      <FieldError match="valueMissing">Email is required.</FieldError>
+    </Field>
+  )
+}
+```
+
+## API
+
+### Input
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"sm" \| "default" \| "md" \| "lg" \| number` | `"md"` | Height and padding scale of the input |
+| `unstyled` | `boolean` | `false` | Strip the outer wrapper styles for use inside `InputGroup` |
+| `nativeInput` | `boolean` | `false` | Render a plain `<input>` element instead of the Base UI primitive |
+
+All standard HTML `<input>` attributes (`type`, `placeholder`, `disabled`, `readOnly`, `required`, `value`, `defaultValue`, `onChange`, etc.) are forwarded to the underlying element.
+
+<Note>
+  When `nativeInput={false}` (the default), `Input` uses `@base-ui/react/input` which participates in Base UI's `Field` context for automatic `aria-invalid` and `aria-describedby` linking.
+</Note>

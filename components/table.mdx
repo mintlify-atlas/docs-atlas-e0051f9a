@@ -1,0 +1,241 @@
+---
+title: "Table: Accessible Data Table with Semantic HTML"
+sidebarTitle: "Table"
+description: "Table renders semantic HTML table elements with consistent Tailwind styling. Includes Header, Body, Footer, Row, Head, Cell, and Caption sub-components."
+---
+
+Table provides a thin, composable layer of Tailwind CSS v4 styling on top of native HTML table elements. Every sub-component maps directly to a semantic element — `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>`, and `<caption>` — so the markup stays accessible and screen-reader friendly out of the box. A responsive overflow wrapper is included by default and can be disabled for layouts where the parent already handles scrolling.
+
+<Note>
+  Need sorting, filtering, virtualization, or drag-and-drop row reordering? Reach for a full data-grid solution instead of this lightweight primitive.
+</Note>
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add table
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install the dependency">
+  Run the manual install command above to add `@base-ui/react` to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/table.tsx` into your project and adjust import aliases as needed.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and that Tailwind CSS v4 is configured.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from "@/components/ui/table"
+```
+
+```tsx
+<Table>
+  <TableCaption>A list of recent invoices.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>Jane Doe</TableCell>
+      <TableCell>jane@example.com</TableCell>
+      <TableCell>$120.00</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>John Smith</TableCell>
+      <TableCell>john@example.com</TableCell>
+      <TableCell>$85.00</TableCell>
+    </TableRow>
+  </TableBody>
+  <TableFooter>
+    <TableRow>
+      <TableCell colSpan={2}>Total</TableCell>
+      <TableCell>$205.00</TableCell>
+    </TableRow>
+  </TableFooter>
+</Table>
+```
+
+## Props / API
+
+### Table
+
+| Prop                      | Type      | Default | Description                                                                                       |
+| ------------------------- | --------- | ------- | ------------------------------------------------------------------------------------------------- |
+| `disableScrollContainer`  | `boolean` | `false` | When `true`, renders only `<table>` without the `overflow-x-auto` wrapper. Use when the parent already handles horizontal scrolling to avoid nested scrollbars and keep sticky headers functional. |
+| `className`               | `string`  | —       | Extra classes applied to the `<table>` element.                                                   |
+
+### TableHeader
+
+Renders `<thead>`. Applies a bottom border to its rows.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<thead>` element.      |
+
+### TableBody
+
+Renders `<tbody>`. The last row's bottom border is automatically removed.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<tbody>` element.      |
+
+### TableFooter
+
+Renders `<tfoot>` with a top border and muted background.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<tfoot>` element.      |
+
+### TableRow
+
+Renders `<tr>` with a bottom border and a subtle hover background.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<tr>` element.         |
+
+### TableHead
+
+Renders `<th>` with medium-weight muted text and consistent height.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<th>` element.         |
+
+### TableCell
+
+Renders `<td>` with consistent padding and middle vertical alignment.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<td>` element.         |
+
+### TableCaption
+
+Renders `<caption>` with muted text positioned below the table.
+
+| Prop        | Type     | Default | Description                                             |
+| ----------- | -------- | ------- | ------------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<caption>` element.       |
+
+## Examples
+
+### Invoice summary table
+
+A complete table with header, body, footer, and caption showing an invoice breakdown.
+
+```tsx
+<Table>
+  <TableCaption>Summary of invoices — Q1 2025</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead>Status</TableHead>
+      <TableHead>Method</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>INV-001</TableCell>
+      <TableCell>Paid</TableCell>
+      <TableCell>Credit Card</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>INV-002</TableCell>
+      <TableCell>Pending</TableCell>
+      <TableCell>Bank Transfer</TableCell>
+      <TableCell className="text-right">$150.00</TableCell>
+    </TableRow>
+  </TableBody>
+  <TableFooter>
+    <TableRow>
+      <TableCell colSpan={3}>Total</TableCell>
+      <TableCell className="text-right">$400.00</TableCell>
+    </TableRow>
+  </TableFooter>
+</Table>
+```
+
+### Disable scroll container for sticky headers
+
+When the table lives inside a container that already handles scrolling — for example a full-page data view — pass `disableScrollContainer` to prevent nested scrollbars and allow sticky column headers to work correctly.
+
+```tsx
+<div className="h-64 overflow-y-auto">
+  <Table disableScrollContainer>
+    <TableHeader>
+      <TableRow>
+        <TableHead className="sticky top-0 bg-background">Name</TableHead>
+        <TableHead className="sticky top-0 bg-background">Role</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {users.map((user) => (
+        <TableRow key={user.id}>
+          <TableCell>{user.name}</TableCell>
+          <TableCell>{user.role}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</div>
+```
+
+### With selection state
+
+Use the `data-[state=selected]` convention on `TableRow` to highlight selected rows by passing a `data-state` attribute.
+
+```tsx
+<TableBody>
+  {rows.map((row) => (
+    <TableRow
+      key={row.id}
+      data-state={selectedIds.includes(row.id) ? "selected" : undefined}
+      onClick={() => toggleRow(row.id)}
+      className="cursor-pointer"
+    >
+      <TableCell>{row.name}</TableCell>
+      <TableCell>{row.email}</TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+```
+
+<Tip>
+  Use `TableCaption` to give the table an accessible title when there is no surrounding heading. Screen readers announce the caption before reading table content.
+</Tip>

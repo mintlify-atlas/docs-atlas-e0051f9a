@@ -1,0 +1,156 @@
+---
+title: "baseui-cn add — Add Components to Your Project"
+sidebarTitle: "add"
+description: "The add command copies one or more Base UI components into your project, resolves dependencies automatically, and installs required npm packages."
+---
+
+The `add` command is how you install components from the baseui-cn registry into your project. It fetches the component source, writes it to your configured components directory, resolves any sub-component dependencies, and runs your package manager to install any required npm packages — all in a single step.
+
+## Usage
+
+```bash
+npx baseui-cn add [components...] [options]
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `-y, --yes` | `false` | Skip all confirmation prompts |
+| `-o, --overwrite` | `false` | Overwrite existing component files (both requested and dependency files) |
+| `-a, --all` | `false` | Add all available components from the registry |
+| `--css <path>` | from config | Stylesheet file to update with theme variables |
+| `-p, --path <path>` | from config | Custom directory to write component files into |
+
+## Examples
+
+```bash
+# Add a single component
+npx baseui-cn add button
+
+# Add several components at once
+npx baseui-cn add dialog drawer toast
+
+# Add all available components
+npx baseui-cn add --all
+
+# Launch the interactive multi-select picker
+npx baseui-cn add
+
+# Add without confirmation prompts
+npx baseui-cn add button -y
+
+# Overwrite an existing component
+npx baseui-cn add button --overwrite
+
+# Write to a custom path
+npx baseui-cn add button --path src/design-system/ui
+```
+
+## Interactive picker
+
+When you run `npx baseui-cn add` with no component names, an interactive multi-select list appears in the terminal. Use `Space` to select components, `A` to select all, and `Enter` to confirm.
+
+```
+? Which components would you like to add? ›
+  ◯ accordion
+  ◯ alert-dialog
+  ◯ autocomplete
+  ◉ button
+  ◉ dialog
+  ◯ drawer
+  ...
+
+  Space to select | Enter to confirm | A to select all
+```
+
+## Dependency resolution
+
+Every component in the registry declares which other components it depends on. When you run `add`, the CLI resolves the full dependency graph before installing anything.
+
+For example, adding `combobox` may also install `select` if it is listed as a dependency. You will see all resolved components listed before installation begins:
+
+```
+✔ 3 components resolved
+
+Components to add:
+  + combobox
+  + select
+  + popover
+
+? Add 3 components? › Yes
+```
+
+Dependency resolution happens through the registry index. You cannot end up with a partially-installed component tree.
+
+## Conflict handling
+
+When you run `add` and some of the target files already exist, the CLI handles conflicts at two levels: **requested components** (the ones you named explicitly) and **dependency components** (pulled in automatically).
+
+### Existing dependency components
+
+If a dependency component already exists in your project, you are given a choice:
+
+```
+Some dependency components already exist:
+  - select -> src/components/ui/select.tsx
+
+? How should baseui-cn handle these existing dependencies? ›
+  ● Reuse existing files     Keep project customizations and install only missing components.
+  ○ Replace existing files   Overwrite the listed dependency component files.
+  ○ Cancel                   Stop before installing the resolved components.
+```
+
+- **Reuse** (default) — keeps your modified version and only installs components that do not yet exist
+- **Replace** — overwrites the dependency files with the latest registry version
+- **Cancel** — aborts without writing any files
+
+### Existing requested components
+
+If a component you explicitly requested already exists, you are asked whether to replace it:
+
+```
+Existing requested component files:
+  - button -> src/components/ui/button.tsx
+
+? Replace 1 requested component with existing target files? › Yes / No
+```
+
+### Skip conflict prompts
+
+Pass `--overwrite` to always replace both requested and dependency files without prompting:
+
+```bash
+npx baseui-cn add button --overwrite
+```
+
+Pass `-y` to skip prompts and keep existing dependency files (requested collisions are still skipped unless `--overwrite` is also set):
+
+```bash
+npx baseui-cn add button -y
+```
+
+## Auto-init
+
+If `baseui-cn.json` does not exist when you run `add`, the CLI automatically runs `init` first and then proceeds with the component installation. You do not need to run `init` manually before your first `add`.
+
+```
+baseui-cn is not initialized. Running init first...
+```
+
+## After installation
+
+Once all files are written and npm dependencies are installed, the CLI confirms with the install paths:
+
+```
+✔ button -> src/components/ui/button.tsx
+✔ Dependencies installed
+
+✓ Done. Components are yours - edit freely.
+```
+
+The files now belong to your project. Edit them freely — there is no locked-in library to break.
+
+<Tip>
+  Run `npx baseui-cn list` to see every component available in the registry before deciding what to add.
+</Tip>

@@ -1,28 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "Base UI",
+  "projectType": "frontend",
+  "projectName": "Base UI",
+  "projectDescription": "A shadcn-style component registry built exclusively on @base-ui/react — 50+ accessible, Tailwind-styled components installed with a single CLI command that compose safely without overlay or focus conflicts.",
   "theme": "willow",
-  "colors": {
-    "primary": "#7c7c7c",
-    "light": "#070707",
-    "dark": "#c0c0c0"
-  },
-  "favicon": "https://media.brand.dev/324aabc3-e24c-4703-b6ab-4078d15b2753.svg",
-  "logo": {
-    "light": "https://media.brand.dev/04dc1e6e-a0ff-46a5-97a8-55cb4267fdbc.svg",
-    "dark": "https://media.brand.dev/04dc1e6e-a0ff-46a5-97a8-55cb4267fdbc.svg"
-  },
-  "navbar": {
-    "primary": {
-      "type": "github",
-      "href": "https://github.com/baseui-cn/baseui-cn"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/baseui-cn/baseui-cn"
-    }
-  },
+  "primaryColor": "#7c7c7c",
+  "lightColor": "#070707",
+  "darkColor": "#c0c0c0",
   "navigation": {
     "tabs": [
       {
@@ -111,5 +94,36 @@
         ]
       }
     ]
-  }
+  },
+  "keyFeatures": [
+    "50+ accessible, headless components built exclusively on @base-ui/react primitives",
+    "shadcn-style developer experience — components are copied into your project, you own the code",
+    "Single shared portal system: Select inside Drawer, Toast inside Dialog, Combobox in overlays all compose safely",
+    "Tailwind CSS v4 styling with CSS custom properties compatible with shadcn/ui theming tokens",
+    "CLI tool (npx baseui-cn) for init, add, update, and list commands",
+    "Works with Next.js, Vite, Remix, Astro, and any React 18+ project",
+    "TypeScript-first with full type exports for all components"
+  ],
+  "publicApiSurface": [
+    "npx baseui-cn init",
+    "npx baseui-cn add [components...]",
+    "npx baseui-cn update [components...]",
+    "npx baseui-cn list",
+    "Button (variant, size, loading)",
+    "Dialog / DialogTrigger / DialogContent / DialogHeader / DialogFooter / DialogClose",
+    "Drawer / DrawerTrigger / DrawerContent (side) / DrawerHeader / DrawerFooter / DrawerClose",
+    "Select / SelectTrigger / SelectContent / SelectItem / SelectGroup",
+    "Combobox / ComboboxInput / ComboboxContent / ComboboxItem / ComboboxChips",
+    "ToastProvider (position, limit, toastManager) / useToast() / createToastManager()",
+    "Tooltip / TooltipTrigger / TooltipContent / TooltipProvider",
+    "Popover / PopoverTrigger / PopoverContent",
+    "DropdownMenu / DropdownMenuTrigger / DropdownMenuContent / DropdownMenuItem",
+    "AlertDialog / AlertDialogTrigger / AlertDialogContent",
+    "Accordion / AccordionItem / AccordionTrigger / AccordionContent",
+    "Tabs / TabsList / TabsTrigger / TabsContent",
+    "Checkbox / CheckboxGroup / Switch / RadioGroup",
+    "Input / Textarea / Field / NumberField / Slider",
+    "Table / Breadcrumb / Pagination / NavigationMenu",
+    "Badge / Avatar / Card / Skeleton / Spinner / Progress / Separator"
+  ]
 }

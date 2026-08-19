@@ -1,0 +1,104 @@
+---
+title: "baseui-cn list — Browse Available Components"
+sidebarTitle: "list"
+description: "The list command prints all components available in the Base UI registry, with descriptions and category tags. Use --json to get machine-readable output."
+---
+
+The `list` command fetches the baseui-cn registry index and prints every available component to the terminal. It is a quick way to discover what you can install before running `add`, and supports a `--json` flag for machine-readable output when scripting or automating.
+
+## Usage
+
+```bash
+npx baseui-cn list [options]
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--json` | `false` | Output the full registry as JSON instead of formatted text |
+
+## Terminal output
+
+Running `npx baseui-cn list` prints a formatted table showing each component's name, description, and category tags:
+
+```
+Available installables (47)
+
+  accordion               Animated collapsible sections.              [navigation]
+  alert-dialog            Modal dialog that requires user action.      [overlays]
+  autocomplete            Text input with filtered suggestions.        [form]
+  avatar                  User avatar with image and fallback.         [display]
+  badge                   Inline label with multiple variants.         [display]
+  button                  Clickable button with cva variants.          [display]
+  card                    Container with header, content, footer.      [display]
+  checkbox                Accessible checkbox with label support.      [form]
+  collapsible             Show/hide content with animation.            [overlays]
+  combobox                Searchable select with filtered options.     [form]
+  command                 Command palette with search and groups.      [overlays]
+  dialog                  Modal dialog with overlay and focus trap.    [overlays]
+  drawer                  Side panel with configurable side prop.      [overlays]
+  dropdown-menu           Floating menu with keyboard navigation.      [overlays]
+  ...
+```
+
+Each row contains:
+- **Name** — the identifier you pass to `npx baseui-cn add`
+- **Description** — a short summary of what the component does
+- **Tags** — category labels such as `[form]`, `[overlays]`, `[display]`, or `[navigation]`
+
+## JSON output
+
+Pass `--json` to print the full registry as a JSON array. Each entry includes the component name, description, tags, file list, and dependency information:
+
+```bash
+npx baseui-cn list --json
+```
+
+```json
+[
+  {
+    "name": "button",
+    "description": "Clickable button with cva variants.",
+    "tags": ["display"],
+    "files": [
+      { "path": "button.tsx", "content": "..." }
+    ],
+    "dependencies": {
+      "required": []
+    }
+  },
+  ...
+]
+```
+
+## Piping to jq
+
+The `--json` flag pairs well with [`jq`](https://jqlang.github.io/jq/) for filtering and scripting:
+
+```bash
+# List only component names
+npx baseui-cn list --json | jq '.[].name'
+
+# Filter to overlay components only
+npx baseui-cn list --json | jq '[.[] | select(.tags[] == "overlays") | .name]'
+
+# Count total components
+npx baseui-cn list --json | jq 'length'
+
+# Find components with npm dependencies
+npx baseui-cn list --json | jq '[.[] | select(.dependencies.required | length > 0) | .name]'
+```
+
+## CI and scripting use cases
+
+The `--json` output is useful in several automation scenarios:
+
+- **Audit scripts** — check which components from the registry are present in your project
+- **CI checks** — verify that all expected components are installed at the correct registry version
+- **Code generation** — enumerate all available components to generate import maps or storybook stories
+- **Custom tooling** — build project-specific wrappers around `baseui-cn add` that pre-select components based on a manifest
+
+<Tip>
+  If you want to install everything in the registry at once, use `npx baseui-cn add --all` rather than piping `list --json` through a shell loop. The `add --all` path handles dependency resolution and deduplication correctly.
+</Tip>

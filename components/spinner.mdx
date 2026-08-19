@@ -1,0 +1,124 @@
+---
+title: "Spinner: Animated Loading Indicator"
+sidebarTitle: "Spinner"
+description: "Spinner renders an animated circular loading indicator. Supports multiple sizes and can be used inline or centered as a full-page loading state."
+---
+
+Spinner is a minimal animated loading indicator built on Lucide's `Loader2` icon with a CSS `animate-spin` class. It renders an `<svg>` with a `role="status"` and `aria-label="Loading"` for accessibility, and accepts any SVG prop — making it easy to adjust size, color, and positioning via Tailwind utility classes.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add spinner
+```
+
+```bash Manual
+npm install lucide-react
+# Then copy the component source into components/ui/spinner.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { Spinner } from "@/components/ui/spinner"
+```
+
+```tsx
+<Spinner />
+```
+
+## Examples
+
+### Sizes
+
+Control spinner size using Tailwind's `size-*` utilities.
+
+```tsx
+import { Spinner } from "@/components/ui/spinner"
+
+export function SpinnerSizes() {
+  return (
+    <div className="flex items-center gap-4">
+      <Spinner className="size-3" />
+      <Spinner className="size-4" />
+      <Spinner className="size-5" />
+      <Spinner className="size-6" />
+      <Spinner className="size-8" />
+    </div>
+  )
+}
+```
+
+### Inline with Text
+
+Spinners work naturally alongside text to indicate in-progress operations.
+
+```tsx
+import { Spinner } from "@/components/ui/spinner"
+
+export function SpinnerInline() {
+  return (
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <Spinner className="size-4" />
+      <span>Loading your workspace…</span>
+    </div>
+  )
+}
+```
+
+### Inside a Button
+
+Use the `Button` component's built-in `loading` prop for button loading states. For custom layouts, place `Spinner` directly inside a button.
+
+```tsx
+import { Spinner } from "@/components/ui/spinner"
+import { Button } from "@/components/ui/button"
+
+export function SpinnerInButton() {
+  return (
+    <div className="flex gap-3">
+      {/* Recommended: use the built-in loading prop */}
+      <Button loading>Saving</Button>
+
+      {/* Manual composition */}
+      <Button variant="outline" disabled>
+        <Spinner className="size-4" />
+        Processing
+      </Button>
+    </div>
+  )
+}
+```
+
+### Full-Page Loading State
+
+Center a spinner to signal a full-page or section-level data fetch.
+
+```tsx
+import { Spinner } from "@/components/ui/spinner"
+
+export function SpinnerFullPage() {
+  return (
+    <div className="flex h-64 items-center justify-center">
+      <Spinner className="size-8 text-muted-foreground" />
+    </div>
+  )
+}
+```
+
+<Tip>
+  The `Button` component has a built-in `loading` prop that handles the spinner, `aria-disabled`, and text masking automatically. Reach for `Spinner` directly only when composing custom loading UI outside of a button.
+</Tip>
+
+## Props
+
+### Spinner
+
+Spinner accepts all standard SVG HTML attributes.
+
+| Prop          | Type     | Default             | Description                                                 |
+| ------------- | -------- | ------------------- | ----------------------------------------------------------- |
+| `className`   | `string` | `"size-4 animate-spin"` | Tailwind classes for size and color — `animate-spin` is always applied |
+| `aria-label`  | `string` | `"Loading"`         | Accessible label announced by screen readers                |

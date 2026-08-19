@@ -1,0 +1,214 @@
+---
+title: "Breadcrumb: Navigation Trail for Hierarchical Pages"
+sidebarTitle: "Breadcrumb"
+description: "Breadcrumb renders an accessible navigation trail showing the current page location within a site hierarchy, with separators and support for dropdowns."
+---
+
+Breadcrumb communicates a user's position within a website or application hierarchy by rendering a horizontal trail of links separated by visual dividers. Each segment is a plain `<li>` element inside an `<ol>` list wrapped in a `<nav aria-label="breadcrumb">`, giving screen readers a clear landmark. The current page is marked with `aria-current="page"` and receives distinct foreground styling to differentiate it from ancestor links.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add breadcrumb
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install dependencies">
+  Run the manual install command above to add `@base-ui/react` and `lucide-react` (used for the default chevron separator and ellipsis icon) to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/breadcrumb.tsx` into your project and adjust import aliases as needed.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and that Tailwind CSS v4 is configured.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbEllipsis,
+} from "@/components/ui/breadcrumb"
+```
+
+```tsx
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/components">Components</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## Props / API
+
+### Breadcrumb
+
+Renders a `<nav aria-label="breadcrumb">`. Accepts all standard HTML `<nav>` props.
+
+| Prop        | Type     | Default | Description                                              |
+| ----------- | -------- | ------- | -------------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<nav>` element.            |
+
+### BreadcrumbList
+
+Renders an `<ol>` with wrapping flex layout and gap spacing.
+
+| Prop        | Type     | Default | Description                                              |
+| ----------- | -------- | ------- | -------------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the list element.               |
+
+### BreadcrumbItem
+
+Renders a `<li>` with inline-flex alignment.
+
+| Prop        | Type     | Default | Description                                              |
+| ----------- | -------- | ------- | -------------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the list item.                  |
+
+### BreadcrumbLink
+
+Renders an `<a>` with a hover colour transition. Accepts a `render` prop (from `useRender`) for use with client-side router link components (e.g. Next.js `<Link>`).
+
+| Prop        | Type               | Default | Description                                                              |
+| ----------- | ------------------ | ------- | ------------------------------------------------------------------------ |
+| `href`      | `string`           | —       | The URL the link points to.                                              |
+| `render`    | `React.ReactElement` | —     | Custom render element — use to swap the `<a>` for a router `<Link>`.    |
+| `className` | `string`           | —       | Extra classes applied to the anchor element.                             |
+
+### BreadcrumbPage
+
+Renders a `<span aria-current="page">` for the final, non-linked segment.
+
+| Prop        | Type     | Default | Description                                             |
+| ----------- | -------- | ------- | ------------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the span element.              |
+
+### BreadcrumbSeparator
+
+Renders a presentational `<li role="presentation" aria-hidden="true">` containing a `ChevronRight` icon by default.
+
+| Prop        | Type        | Default          | Description                                                     |
+| ----------- | ----------- | ---------------- | --------------------------------------------------------------- |
+| `children`  | `ReactNode` | `<ChevronRight>` | Custom separator content — swap for any icon or character.      |
+| `className` | `string`    | —                | Extra classes applied to the separator list item.               |
+
+### BreadcrumbEllipsis
+
+Renders a `<span role="presentation" aria-hidden="true">` containing a `MoreHorizontal` icon, with a visually hidden "More" label for screen readers.
+
+| Prop        | Type     | Default | Description                                        |
+| ----------- | -------- | ------- | -------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the ellipsis span.        |
+
+## Examples
+
+### Custom separator
+
+Pass any icon or character as `children` to `BreadcrumbSeparator` to replace the default chevron.
+
+```tsx
+import { Slash } from "lucide-react"
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator>
+      <Slash />
+    </BreadcrumbSeparator>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator>
+      <Slash />
+    </BreadcrumbSeparator>
+    <BreadcrumbItem>
+      <BreadcrumbPage>Components</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+### Collapsed trail with ellipsis
+
+Use `BreadcrumbEllipsis` to collapse intermediate segments when the hierarchy is deep, keeping the trail compact.
+
+```tsx
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbEllipsis />
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+### With a Next.js router Link
+
+Use the `render` prop on `BreadcrumbLink` to swap the underlying `<a>` for a Next.js `<Link>` without losing styles.
+
+```tsx
+import Link from "next/link"
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink render={<Link href="/" />}>Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink render={<Link href="/products" />}>Products</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Widget Pro</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+<Tip>
+  Always include `BreadcrumbSeparator` between every `BreadcrumbItem`. Separators are `aria-hidden` so they don't interfere with screen reader announcement of the trail.
+</Tip>

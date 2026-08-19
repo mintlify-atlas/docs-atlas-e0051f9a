@@ -1,0 +1,259 @@
+---
+title: "NavigationMenu: Horizontal Site Navigation with Dropdowns"
+sidebarTitle: "NavigationMenu"
+description: "NavigationMenu renders an accessible horizontal navigation bar with dropdown panel support, built on Base UI's NavigationMenu primitive for top-level site navigation."
+---
+
+NavigationMenu is the primary building block for top-level site navigation. It renders a horizontal list of links and trigger buttons; triggers open rich dropdown panels that can contain links, descriptions, or any content you place inside. Built on Base UI's `NavigationMenu` primitive, it handles focus management, keyboard navigation (Tab, Arrow keys, Escape), and ARIA roles automatically so you can focus entirely on content and layout.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add navigation-menu
+```
+
+```bash Manual
+npm install @base-ui/react class-variance-authority lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install dependencies">
+  Run the manual install command above to add `@base-ui/react`, `class-variance-authority`, and `lucide-react` to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/navigation-menu.tsx` into your project and adjust the import aliases if needed.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and that Tailwind CSS v4 is configured.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+  NavigationMenuIndicator,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu"
+```
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Getting Started</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="grid gap-3 p-4 w-[400px]">
+          <li>
+            <NavigationMenuLink href="/docs/intro">
+              Introduction
+            </NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink href="/docs/installation">
+              Installation
+            </NavigationMenuLink>
+          </li>
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/docs">Documentation</NavigationMenuLink>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+## Props / API
+
+### NavigationMenu
+
+The root component that owns all state and positioning logic.
+
+| Prop        | Type                            | Default     | Description                                                                          |
+| ----------- | ------------------------------- | ----------- | ------------------------------------------------------------------------------------ |
+| `align`     | `"start" \| "center" \| "end"` | `"start"`   | Horizontal alignment of the dropdown positioner relative to the active trigger.      |
+| `className` | `string`                        | —           | Extra classes applied to the root element.                                           |
+
+### NavigationMenuList
+
+Renders the horizontal `<ul>` of navigation items.
+
+| Prop        | Type     | Default | Description                                           |
+| ----------- | -------- | ------- | ----------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the list element.            |
+
+### NavigationMenuItem
+
+Wrapper for a single navigation entry — either a trigger+content pair or a standalone link.
+
+| Prop        | Type     | Default | Description                                         |
+| ----------- | -------- | ------- | --------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the item element.          |
+
+### NavigationMenuTrigger
+
+A button that opens the associated `NavigationMenuContent` panel on hover or click. Renders a chevron indicator.
+
+| Prop        | Type        | Default | Description                                           |
+| ----------- | ----------- | ------- | ----------------------------------------------------- |
+| `children`  | `ReactNode` | —       | Label content rendered inside the trigger button.     |
+| `className` | `string`    | —       | Extra classes applied to the trigger button.          |
+
+### NavigationMenuContent
+
+The dropdown panel revealed when the trigger is activated.
+
+| Prop        | Type        | Default | Description                                            |
+| ----------- | ----------- | ------- | ------------------------------------------------------ |
+| `children`  | `ReactNode` | —       | Any content — links, grids, descriptions, media, etc.  |
+| `className` | `string`    | —       | Extra classes applied to the content container.        |
+
+### NavigationMenuLink
+
+A styled anchor for use both as a standalone nav item and inside content panels.
+
+| Prop        | Type               | Default | Description                                                        |
+| ----------- | ------------------ | ------- | ------------------------------------------------------------------ |
+| `href`      | `string`           | —       | URL the link points to.                                            |
+| `render`    | `React.ReactElement` | —     | Custom render element — swap `<a>` for a router `<Link>`.         |
+| `className` | `string`           | —       | Extra classes applied to the link element.                         |
+
+### NavigationMenuIndicator
+
+An optional animated indicator shown beneath the active trigger in the menu bar.
+
+| Prop        | Type     | Default | Description                                       |
+| ----------- | -------- | ------- | ------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the indicator element.   |
+
+### NavigationMenuViewport
+
+The viewport container that the content panels animate in and out of. Usually placed after `NavigationMenuList`.
+
+| Prop        | Type     | Default | Description                                        |
+| ----------- | -------- | ------- | -------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the viewport container.   |
+
+## Examples
+
+### Simple link-only navigation
+
+For a header where no dropdowns are needed, use `NavigationMenuLink` directly inside `NavigationMenuItem`.
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/">Home</NavigationMenuLink>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/about">About</NavigationMenuLink>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/blog">Blog</NavigationMenuLink>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/contact">Contact</NavigationMenuLink>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+### Rich dropdown with descriptions
+
+Place a grid of links and descriptions inside `NavigationMenuContent` for a mega-menu style panel.
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="grid grid-cols-2 gap-3 p-4 w-[500px]">
+          <li>
+            <NavigationMenuLink href="/products/analytics">
+              <div className="font-medium mb-1">Analytics</div>
+              <p className="text-sm text-muted-foreground">
+                Real-time dashboards and reporting tools.
+              </p>
+            </NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink href="/products/automation">
+              <div className="font-medium mb-1">Automation</div>
+              <p className="text-sm text-muted-foreground">
+                Workflow automation and scheduled tasks.
+              </p>
+            </NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink href="/products/integrations">
+              <div className="font-medium mb-1">Integrations</div>
+              <p className="text-sm text-muted-foreground">
+                Connect with your existing toolchain.
+              </p>
+            </NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink href="/products/security">
+              <div className="font-medium mb-1">Security</div>
+              <p className="text-sm text-muted-foreground">
+                SSO, audit logs, and role-based access.
+              </p>
+            </NavigationMenuLink>
+          </li>
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/pricing">Pricing</NavigationMenuLink>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+### Center-aligned dropdown
+
+Pass `align="center"` to the root `NavigationMenu` to align the dropdown panel to the centre of its trigger instead of the start edge.
+
+```tsx
+<NavigationMenu align="center">
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="grid gap-2 p-4 w-[300px]">
+          <li>
+            <NavigationMenuLink href="/docs">Documentation</NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink href="/blog">Blog</NavigationMenuLink>
+          </li>
+          <li>
+            <NavigationMenuLink href="/changelog">Changelog</NavigationMenuLink>
+          </li>
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+<Tip>
+  Combine `NavigationMenuLink` with the `render` prop and your router's `<Link>` component for client-side navigation without a full page reload.
+</Tip>

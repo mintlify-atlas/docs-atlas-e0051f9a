@@ -1,0 +1,238 @@
+---
+title: "DropdownMenu: Context Menu with Keyboard Navigation"
+sidebarTitle: "DropdownMenu"
+description: "DropdownMenu renders a floating menu anchored to a trigger with full keyboard navigation. Supports items, separators, labels, sub-menus, and checkable items."
+---
+
+DropdownMenu renders a floating menu panel anchored to a trigger button. It is built on Base UI's `Menu` primitive and provides complete keyboard navigation out of the box: arrow keys move between items, Enter or Space activates them, Escape closes the menu, and Tab moves focus away. Items support a `destructive` variant for dangerous actions, an `inset` prop for aligning text with icon-bearing items, and a `DropdownMenuShortcut` slot for displaying keyboard hint labels. Sub-menus, checkbox items, and radio groups are all first-class exports.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add dropdown-menu
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install the packages manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/dropdown-menu.tsx` from the repository into your project.
+  </Step>
+  <Step title="Update import paths">
+    Adjust the `@/` alias to match your project's path configuration.
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from "@/components/ui/dropdown-menu"
+```
+
+## Usage
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger render={<Button variant="outline">Open menu</Button>} />
+  <DropdownMenuContent>
+    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Settings</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem variant="destructive">Log out</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+<Note>
+  Base UI uses a `render` prop instead of `asChild`. Pass your custom trigger element to `DropdownMenuTrigger` via `render={<Button />}`.
+</Note>
+
+## Examples
+
+### Menu with shortcuts
+
+Use `DropdownMenuShortcut` to display keyboard shortcut hints alongside menu items.
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuShortcut,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { UserIcon, SettingsIcon, LogOutIcon } from "lucide-react"
+
+export function DropdownWithShortcutsExample() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="outline">Account</Button>} />
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <UserIcon className="mr-2 size-4" />
+          Profile
+          <DropdownMenuShortcut>⌘P</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <SettingsIcon className="mr-2 size-4" />
+          Settings
+          <DropdownMenuShortcut>⌘,</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive">
+          <LogOutIcon className="mr-2 size-4" />
+          Log out
+          <DropdownMenuShortcut>⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+### Checkbox and radio items
+
+`DropdownMenuCheckboxItem` for independent toggles; `DropdownMenuRadioGroup` + `DropdownMenuRadioItem` for mutually exclusive choices.
+
+```tsx
+import { useState } from "react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+
+export function DropdownCheckboxRadioExample() {
+  const [notifications, setNotifications] = useState(true)
+  const [sound, setSound] = useState(false)
+  const [theme, setTheme] = useState("system")
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="outline">Preferences</Button>} />
+      <DropdownMenuContent className="w-52">
+        <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+        <DropdownMenuCheckboxItem
+          checked={notifications}
+          onCheckedChange={setNotifications}
+        >
+          Enable notifications
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={sound}
+          onCheckedChange={setSound}
+        >
+          Play sound
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Theme</DropdownMenuLabel>
+        <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+          <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+### Sub-menu
+
+Nest a `DropdownMenuSub` inside the content to create a cascading sub-menu.
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+
+export function DropdownSubMenuExample() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="outline">Actions</Button>} />
+      <DropdownMenuContent className="w-48">
+        <DropdownMenuItem>View</DropdownMenuItem>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Share</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem>Copy link</DropdownMenuItem>
+            <DropdownMenuItem>Send via email</DropdownMenuItem>
+            <DropdownMenuItem>Export as PDF</DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+## API Reference
+
+### DropdownMenuContent
+
+| Prop          | Type                                       | Default    | Description                                      |
+| ------------- | ------------------------------------------ | ---------- | ------------------------------------------------ |
+| `side`        | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Side of the trigger the menu appears on          |
+| `sideOffset`  | `number`                                   | `4`        | Distance in px between the menu and the trigger  |
+| `align`       | `"start" \| "center" \| "end"`            | `"start"`  | Alignment of the popup relative to the trigger   |
+| `alignOffset` | `number`                                   | `0`        | Offset in px along the alignment axis            |
+
+### DropdownMenuItem
+
+| Prop      | Type                           | Default     | Description                                        |
+| --------- | ------------------------------ | ----------- | -------------------------------------------------- |
+| `variant` | `"default" \| "destructive"` | `"default"` | Applies destructive red coloring to the item       |
+| `inset`   | `boolean`                      | —           | Adds left padding so text aligns with icon items   |
+
+### DropdownMenuLabel / DropdownMenuSubTrigger / DropdownMenuCheckboxItem / DropdownMenuRadioItem
+
+Each of these accepts an `inset` (`boolean`) prop that adds left padding to align content with icon-bearing menu items.
+
+### DropdownMenuTrigger
+
+Accepts all Base UI `Menu.Trigger` props. Use the `render` prop to supply a custom trigger element.

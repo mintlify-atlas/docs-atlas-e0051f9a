@@ -1,0 +1,120 @@
+---
+title: "Switch: Accessible On/Off Toggle Control"
+sidebarTitle: "Switch"
+description: "Switch renders an accessible on/off toggle built on Base UI's Switch primitive. Supports checked, disabled, and controlled states with smooth CSS transitions."
+---
+
+The `Switch` component is built on Base UI's `Switch` primitive and renders a pill-shaped toggle with a sliding thumb. It supports a `label` convenience prop for inline labeling, controlled and uncontrolled checked states, and a disabled state — all with smooth CSS transitions and proper ARIA semantics.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add switch
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/switch.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import { Switch } from "@/components/ui/switch"
+```
+
+```tsx
+<Switch label="Email notifications" />
+```
+
+## Examples
+
+### With label and description
+
+Use the `label` prop for a simple inline label. For richer layouts with a description line, place the switch alongside custom markup.
+
+```tsx
+import { Switch } from "@/components/ui/switch"
+
+export function SwitchWithDescription() {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div>
+        <p className="text-sm font-medium">Marketing emails</p>
+        <p className="text-sm text-muted-foreground">
+          Receive emails about new products and features.
+        </p>
+      </div>
+      <Switch defaultChecked aria-label="Marketing emails" />
+    </div>
+  )
+}
+```
+
+### Controlled
+
+Pass `checked` and `onCheckedChange` to drive the toggle from external state.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { Switch } from "@/components/ui/switch"
+
+export function SwitchControlled() {
+  const [enabled, setEnabled] = useState(false)
+
+  return (
+    <div className="flex items-center gap-3">
+      <Switch
+        checked={enabled}
+        onCheckedChange={setEnabled}
+        id="notifications"
+      />
+      <label htmlFor="notifications" className="text-sm select-none">
+        Notifications are {enabled ? "on" : "off"}
+      </label>
+    </div>
+  )
+}
+```
+
+### Disabled
+
+A disabled switch preserves its visual state but rejects interaction.
+
+```tsx
+import { Switch } from "@/components/ui/switch"
+
+export function SwitchDisabled() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Switch label="Disabled (off)" disabled />
+      <Switch label="Disabled (on)" defaultChecked disabled />
+    </div>
+  )
+}
+```
+
+## API
+
+### Switch
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checked` | `boolean` | — | Controlled checked state |
+| `defaultChecked` | `boolean` | `false` | Uncontrolled initial checked state |
+| `onCheckedChange` | `(checked: boolean) => void` | — | Fires when the checked state changes |
+| `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity |
+| `label` | `string` | — | Convenience prop that renders an inline `<label>` |
+| `name` | `string` | — | Form field name submitted with the form |
+| `required` | `boolean` | `false` | Marks the switch as required in a form |
+
+<Note>
+  When using `label`, the switch and label are automatically associated. For custom label markup, use an `id` on the switch and `htmlFor` on your `<label>`.
+</Note>

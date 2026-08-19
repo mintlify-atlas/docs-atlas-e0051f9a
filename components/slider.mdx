@@ -1,0 +1,134 @@
+---
+title: "Slider: Range Input with Single and Multi-Thumb Support"
+sidebarTitle: "Slider"
+description: "Slider renders a draggable range input built on Base UI's Slider primitive. Supports single value, range (two thumbs), step intervals, and min/max bounds."
+---
+
+`Slider` wraps Base UI's `Slider` primitive in a styled track-and-thumb layout. Pass a single-element array for a regular value slider, or a two-element array for a range slider with two draggable thumbs. The component supports `min`, `max`, `step`, vertical orientation, and a disabled state.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add slider
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/slider.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import { Slider } from "@/components/ui/slider"
+```
+
+```tsx
+<Slider defaultValue={[50]} max={100} step={1} />
+```
+
+## Examples
+
+### Basic slider
+
+A single-thumb slider between 0 and 100 with a `step` of 1.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { Slider } from "@/components/ui/slider"
+
+export function SliderBasic() {
+  const [value, setValue] = useState([40])
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Slider
+        value={value}
+        onValueChange={setValue}
+        min={0}
+        max={100}
+        step={1}
+        aria-label="Volume"
+      />
+      <p className="text-sm text-muted-foreground">Volume: {value[0]}</p>
+    </div>
+  )
+}
+```
+
+### Range slider
+
+Pass a two-element array to create a range slider with independent min and max thumbs.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { Slider } from "@/components/ui/slider"
+
+export function SliderRange() {
+  const [range, setRange] = useState([20, 80])
+
+  return (
+    <div className="flex flex-col gap-2">
+      <Slider
+        value={range}
+        onValueChange={setRange}
+        min={0}
+        max={100}
+        step={5}
+        aria-label="Price range"
+      />
+      <p className="text-sm text-muted-foreground">
+        ${range[0]} – ${range[1]}
+      </p>
+    </div>
+  )
+}
+```
+
+### Discrete steps
+
+Use `step` to snap the thumb to discrete intervals. Combine with `min` and `max` for bounded inputs like star ratings or font sizes.
+
+```tsx
+import { Slider } from "@/components/ui/slider"
+
+export function SliderWithSteps() {
+  return (
+    <div className="flex flex-col gap-4">
+      <Slider defaultValue={[3]} min={1} max={5} step={1} aria-label="Rating" />
+      <Slider defaultValue={[16]} min={10} max={32} step={2} aria-label="Font size" />
+    </div>
+  )
+}
+```
+
+## API
+
+### Slider
+
+`Slider` forwards all props to `Slider.Root` from `@base-ui/react/slider`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `number[]` | — | Controlled value(s). Single-element for one thumb, two-element for a range |
+| `defaultValue` | `number[]` | `[min, max]` | Uncontrolled initial value(s) |
+| `onValueChange` | `(value: number[]) => void` | — | Fires while the user drags a thumb |
+| `onValueCommitted` | `(value: number[]) => void` | — | Fires when the user releases a thumb |
+| `min` | `number` | `0` | Minimum allowed value |
+| `max` | `number` | `100` | Maximum allowed value |
+| `step` | `number` | `1` | Increment between selectable values |
+| `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction of the slider |
+
+<Tip>
+  For a vertical slider, set `orientation="vertical"` and give the slider container an explicit height. The track fills `100%` of the available height automatically.
+</Tip>

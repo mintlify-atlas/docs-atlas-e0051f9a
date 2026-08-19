@@ -1,0 +1,117 @@
+---
+title: "Skeleton: Loading Placeholder for Content Areas"
+sidebarTitle: "Skeleton"
+description: "Skeleton renders an animated placeholder that matches the shape of loading content. Use it to reduce perceived load time while data is being fetched."
+---
+
+Skeleton is a lightweight `div` with a pulsing animation that mimics the shape of the content being loaded. By matching the Skeleton's dimensions to the final element — a heading, a paragraph, an avatar, or a card — you give users an immediate sense of the page structure before real data arrives, which significantly reduces perceived load time.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add skeleton
+```
+
+```bash Manual
+# No extra dependencies required
+# Copy the component source into components/ui/skeleton.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { Skeleton } from "@/components/ui/skeleton"
+```
+
+```tsx
+<Skeleton className="h-4 w-48" />
+```
+
+## Examples
+
+### Text Lines
+
+Stack multiple skeletons to represent a paragraph of text loading in.
+
+```tsx
+import { Skeleton } from "@/components/ui/skeleton"
+
+export function SkeletonText() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-5/6" />
+    </div>
+  )
+}
+```
+
+### Card Placeholder
+
+Compose skeletons to mirror a real card's layout while its data loads.
+
+```tsx
+import { Skeleton } from "@/components/ui/skeleton"
+
+export function SkeletonCard() {
+  return (
+    <div className="rounded-xl border p-4 space-y-4 w-72">
+      <div className="flex items-center gap-3">
+        <Skeleton className="size-10 rounded-full" />
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+      </div>
+      <Skeleton className="h-32 w-full rounded-lg" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-4/5" />
+      </div>
+    </div>
+  )
+}
+```
+
+### List Rows
+
+Repeat a row pattern to indicate a list of items loading.
+
+```tsx
+import { Skeleton } from "@/components/ui/skeleton"
+
+export function SkeletonList() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <Skeleton className="size-8 rounded-full" />
+          <div className="space-y-1.5 flex-1">
+            <Skeleton className="h-3.5 w-40" />
+            <Skeleton className="h-3 w-28" />
+          </div>
+          <Skeleton className="h-7 w-16 rounded-md" />
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+<Tip>
+  Always match the `border-radius` of the Skeleton to the element it represents — use `rounded-full` for avatars, `rounded-lg` for cards, and `rounded-md` for buttons — to make the transition feel seamless when content loads.
+</Tip>
+
+## Props
+
+### Skeleton
+
+Skeleton accepts all standard `div` HTML attributes. Use `className` to set dimensions and shape.
+
+| Prop        | Type     | Default | Description                                                      |
+| ----------- | -------- | ------- | ---------------------------------------------------------------- |
+| `className` | `string` | —       | Tailwind classes for width, height, and border-radius            |
+| `style`     | `object` | —       | Inline styles for dynamic dimensions when Tailwind is insufficient |

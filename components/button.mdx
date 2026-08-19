@@ -1,0 +1,150 @@
+---
+title: "Button Component: Variants, Sizes, and Loading State"
+sidebarTitle: "Button"
+description: "The Button component supports 8 visual variants, 11 sizes, and a built-in loading prop that shows a spinner overlay while blocking interaction."
+---
+
+Button is a clickable element built on Base UI's `useRender` hook, giving you full render-prop flexibility. It ships with eight semantic color variants, eleven sizing options from `xs` to `xl`, and a first-class `loading` prop that automatically shows a centered spinner, sets `aria-disabled`, and prevents interaction — no wrapper logic required.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add button
+```
+
+```bash Manual
+npm install @base-ui/react class-variance-authority
+# Then copy the component source into components/ui/button.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { Button } from "@/components/ui/button"
+```
+
+```tsx
+<Button variant="default">Click me</Button>
+```
+
+## Examples
+
+### Variants
+
+Button ships with eight variants covering primary actions, destructive flows, ghost interactions, and more.
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+export function ButtonVariants() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button variant="default">Default</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="destructive-outline">Destructive Outline</Button>
+      <Button variant="warning">Warning</Button>
+      <Button variant="link">Link</Button>
+    </div>
+  )
+}
+```
+
+### Sizes
+
+Eleven sizes are available — text sizes from `xs` to `xl` and dedicated icon sizes for square icon-only buttons.
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+export function ButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button size="xs">Extra Small</Button>
+      <Button size="sm">Small</Button>
+      <Button size="default">Default</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+      <Button size="xl">Extra Large</Button>
+    </div>
+  )
+}
+```
+
+### Loading State
+
+Pass `loading` to block interaction and display the spinner automatically. The button text becomes transparent and a centered `Spinner` overlay appears; `aria-disabled` is set for assistive technology.
+
+```tsx
+import { Button } from "@/components/ui/button"
+
+export function ButtonLoading() {
+  return (
+    <div className="flex gap-2">
+      <Button loading>Saving changes</Button>
+      <Button variant="outline" loading>
+        Uploading
+      </Button>
+    </div>
+  )
+}
+```
+
+### With Icon
+
+Combine an icon with button text, or use a dedicated icon size for square icon-only buttons.
+
+```tsx
+import { Plus, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+
+export function ButtonWithIcon() {
+  return (
+    <div className="flex gap-2">
+      <Button>
+        <Plus />
+        New item
+      </Button>
+      <Button variant="destructive-outline" size="icon">
+        <Trash2 />
+      </Button>
+    </div>
+  )
+}
+```
+
+### Render Prop
+
+Because Button uses Base UI's `render` prop you can swap the underlying element without losing styles or accessibility attributes.
+
+```tsx
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+
+export function ButtonAsLink() {
+  return (
+    <Button render={<Link href="/dashboard" />} variant="outline">
+      Go to dashboard
+    </Button>
+  )
+}
+```
+
+<Note>
+  Use `render` instead of `asChild`. This is the Base UI pattern — it merges props correctly and keeps the component tree clean.
+</Note>
+
+## Props
+
+### Button
+
+| Prop      | Type                                                                                                                | Default     | Description                                                                   |
+| --------- | ------------------------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------- |
+| `variant` | `"default" \| "destructive" \| "destructive-outline" \| "ghost" \| "link" \| "outline" \| "secondary" \| "warning"` | `"default"` | Visual style and color role                                                   |
+| `size`    | `"xs" \| "sm" \| "default" \| "md" \| "lg" \| "xl" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg" \| "icon-xl"` | `"default"` | Height, padding, and icon size                                                |
+| `loading` | `boolean`                                                                                                           | `false`     | Show a spinner overlay and set `aria-disabled` while an action is in progress |
+| `render`  | `React.ReactElement`                                                                                                | —           | Replace the underlying `<button>` element while preserving all props          |

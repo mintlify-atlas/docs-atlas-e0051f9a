@@ -1,0 +1,109 @@
+---
+title: "baseui-cn update — Refresh Components to Latest Version"
+sidebarTitle: "update"
+description: "The update command replaces components with the latest registry versions. Pull in bug fixes and new features — commit to version control before updating."
+---
+
+The `update` command replaces one or more installed components with the latest versions from the baseui-cn registry. It uses the same installation logic as `add`, but always overwrites existing files — it is designed specifically for refreshing components you have already installed.
+
+## Usage
+
+```bash
+npx baseui-cn update [components...] [options]
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `-y, --yes` | `false` | Skip all confirmation prompts |
+| `-a, --all` | `false` | Update all available components in the registry |
+| `--css <path>` | from config | Stylesheet file to update with theme variables |
+| `-p, --path <path>` | from config | Custom directory where components are installed |
+
+## Examples
+
+```bash
+# Update a single component
+npx baseui-cn update button
+
+# Update several components at once
+npx baseui-cn update dialog drawer toast
+
+# Update all installed components
+npx baseui-cn update --all
+
+# Update without confirmation prompts
+npx baseui-cn update button -y
+```
+
+## Difference from add --overwrite
+
+Both `update` and `add --overwrite` will overwrite existing files. The distinction is in intent and behavior:
+
+| Behavior | `add --overwrite` | `update` |
+|---|---|---|
+| Always overwrites existing files | ✓ | ✓ |
+| Designed for first-time installation | ✓ | |
+| Designed for refreshing existing installs | | ✓ |
+| Prompts about dependency conflicts | ✓ | |
+| Silently overwrites dependency files | | ✓ |
+
+Use `add` when you are installing a component for the first time. Use `update` when you want to pull in upstream changes from the registry.
+
+## Dependency handling
+
+Like `add`, `update` resolves the full dependency graph of each component before writing files. If a component you are updating has dependencies that also have newer versions, those dependency files are updated as well.
+
+```
+✔ 2 components resolved
+
+Components to update:
+  + dialog
+  + dialog-overlay
+
+? Update 2 components? › Yes
+```
+
+## Warning: customizations will be overwritten
+
+`update` unconditionally replaces component files with the latest registry versions. Any edits you have made to those files — custom variants, modified styles, extra props — will be lost.
+
+<Warning>
+  Always commit your current component files to version control before running `update`. That way you can review the diff and selectively re-apply your customizations after the update.
+</Warning>
+
+## Update all components
+
+The `--all` flag fetches every component in the registry and updates each one in sequence:
+
+```bash
+npx baseui-cn update --all
+```
+
+This is useful when a new version of baseui-cn ships with improvements across many components and you want to take the latest version of everything at once.
+
+```
+Updating all 47 components...
+
+✔ accordion -> src/components/ui/accordion.tsx
+✔ alert-dialog -> src/components/ui/alert-dialog.tsx
+✔ autocomplete -> src/components/ui/autocomplete.tsx
+...
+✔ Dependencies installed
+
+✓ Done. Components refreshed successfully.
+```
+
+## After updating
+
+Once the update completes, the CLI prints the paths of each refreshed file:
+
+```
+✔ button -> src/components/ui/button.tsx
+✔ Dependencies installed
+
+✓ Done. Components refreshed successfully.
+```
+
+Review the diff in your version control tool to understand what changed between your previous version and the latest registry version.

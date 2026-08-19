@@ -1,0 +1,189 @@
+---
+title: "Field: Label, Input, Description, and Validation Wrapper"
+sidebarTitle: "Field"
+description: "Field wraps form controls with a label, description, and validation message. Built on Base UI's Field primitive for accessible form field composition."
+---
+
+`Field` is a composable wrapper that binds a label, description, and validation message to any form control. It is built on Base UI's `Field.Root` primitive, which automatically handles `aria-describedby`, `aria-invalid`, and `aria-labelledby` linking so you don't have to wire up ids by hand. Drop any form component — `Input`, `Textarea`, `Select`, `Checkbox`, or others — inside a `Field` and get accessible error handling for free.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add field
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/field.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import {
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
+} from "@/components/ui/field"
+```
+
+```tsx
+<Field>
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl type="email" placeholder="you@example.com" />
+  <FieldDescription>We'll never share your email.</FieldDescription>
+</Field>
+```
+
+## Examples
+
+### Native validation with FieldError
+
+`FieldError` only renders when its `match` condition is met. Errors surface on form submit by default.
+
+```tsx
+import {
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
+} from "@/components/ui/field"
+
+export function FieldWithValidation() {
+  return (
+    <Field name="username">
+      <FieldLabel>Username</FieldLabel>
+      <FieldControl
+        placeholder="Enter a username"
+        required
+        pattern="[a-z0-9_]+"
+        minLength={3}
+      />
+      <FieldDescription>
+        Lowercase letters, numbers, and underscores only.
+      </FieldDescription>
+      <FieldError match="valueMissing">Username is required.</FieldError>
+      <FieldError match="patternMismatch">
+        Only lowercase letters, numbers, and underscores.
+      </FieldError>
+      <FieldError match="tooShort">Must be at least 3 characters.</FieldError>
+    </Field>
+  )
+}
+```
+
+### Using FieldControl render prop for Textarea
+
+Use the `render` prop on `FieldControl` to swap the default `<input>` for a `<textarea>` or any other form control while keeping all ARIA wiring intact.
+
+```tsx
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldControl,
+  FieldError,
+} from "@/components/ui/field"
+
+export function FieldWithTextarea() {
+  return (
+    <Field name="bio">
+      <FieldLabel>Bio</FieldLabel>
+      <FieldControl
+        render={<textarea rows={4} />}
+        placeholder="Tell us about yourself"
+        maxLength={200}
+        required
+      />
+      <FieldDescription>Max 200 characters.</FieldDescription>
+      <FieldError match="valueMissing">Bio is required.</FieldError>
+    </Field>
+  )
+}
+```
+
+### Custom async validation with onChange mode
+
+Pass a `validate` function and set `validationMode="onChange"` with a debounce for real-time feedback without hammering an API.
+
+```tsx
+"use client"
+
+import {
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldError,
+} from "@/components/ui/field"
+
+async function checkUsername(value: string): Promise<string | null> {
+  await new Promise((r) => setTimeout(r, 400))
+  return value === "taken" ? "That username is already taken." : null
+}
+
+export function FieldCustomValidation() {
+  return (
+    <Field
+      name="username"
+      validate={checkUsername}
+      validationMode="onChange"
+      validationDebounceTime={400}
+    >
+      <FieldLabel>Username</FieldLabel>
+      <FieldControl placeholder="Pick a username" />
+      <FieldError />
+    </Field>
+  )
+}
+```
+
+## API
+
+### Field
+
+Wraps all field parts. Built on `Field.Root`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | — | Identifies the field when a form is submitted |
+| `disabled` | `boolean` | `false` | Disables the field and all its controls |
+| `invalid` | `boolean` | — | Marks the field as invalid externally |
+| `validate` | `(value: string) => string \| string[] \| null \| Promise<string \| string[] \| null>` | — | Custom validation function. Return an error string or `null` |
+| `validationMode` | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | When to trigger validation |
+| `validationDebounceTime` | `number` | `0` | Debounce in ms for `onChange` validation |
+
+### FieldLabel
+
+Accessible label auto-associated with the control. Built on `Field.Label`. Accepts all `<label>` HTML attributes.
+
+### FieldControl
+
+The form control (renders `<input>` by default). Built on `Field.Control`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `render` | `React.ReactElement` | `<input />` | Replace the default input with a custom element (Base UI `render` prop pattern) |
+
+### FieldDescription
+
+Helper text below the control. Built on `Field.Description`. Accepts all standard HTML element props.
+
+### FieldError
+
+Displays validation errors. Built on `Field.Error`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `match` | `"valueMissing" \| "typeMismatch" \| "patternMismatch" \| "tooLong" \| "tooShort" \| "rangeOverflow" \| "rangeUnderflow" \| "stepMismatch" \| "badInput" \| "customError" \| boolean` | — | Which validity state to match before rendering. Omit to show all errors |
+
+<Note>
+  `Field` handles all `aria-describedby` and `aria-invalid` linking automatically. You do not need to manually assign IDs or ARIA attributes to inputs inside a `Field`.
+</Note>

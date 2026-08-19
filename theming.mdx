@@ -1,0 +1,155 @@
+---
+title: "Theming Base UI with CSS Custom Properties"
+sidebarTitle: "Theming"
+description: "baseui-cn follows the shadcn/ui CSS variable convention. Your existing theme transfers directly — customize colors, radius, and dark mode in global CSS."
+---
+
+baseui-cn uses CSS custom properties for every design token — colors, radius, and surface values — following the same variable naming convention as shadcn/ui. If you are already running a shadcn/ui theme, every token name you know transfers directly. If you are starting fresh, `npx baseui-cn init` injects a complete set of default variables into your global stylesheet automatically.
+
+## How the token system works
+
+Variables are defined as HSL channel values (without the `hsl()` wrapper), which allows Tailwind CSS v4's opacity modifier syntax to work — for example, `bg-primary/50` applies 50% opacity to the primary color without any extra configuration.
+
+The `init` command writes a `@theme` block in your global CSS file that maps the custom properties to Tailwind color tokens:
+
+```css
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+}
+```
+
+With this mapping in place, Tailwind utility classes like `bg-primary`, `text-muted-foreground`, and `border-border` resolve to your custom property values out of the box. No additional Tailwind configuration is required.
+
+## Customizing your theme
+
+To change the look of your components, edit the CSS variable values in your global stylesheet. All components automatically reflect the updated values.
+
+Here is a complete light and dark mode example:
+
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+}
+```
+
+## Dark mode
+
+Dark mode is implemented with a `.dark` class on the `html` or `body` element. Toggle it in JavaScript to switch themes at runtime:
+
+```ts
+document.documentElement.classList.toggle("dark")
+```
+
+All components read their colors from CSS variables, so toggling the class is the only change required — no component-level updates needed.
+
+<Tip>
+  Prefer using `prefers-color-scheme` to follow the system preference automatically. Add a `@media (prefers-color-scheme: dark)` block that applies the same `.dark` variable overrides.
+</Tip>
+
+## Token reference
+
+| Token | Tailwind class | Description |
+|---|---|---|
+| `--background` | `bg-background` | Page background |
+| `--foreground` | `text-foreground` | Default body text |
+| `--primary` | `bg-primary` | Primary action color |
+| `--primary-foreground` | `text-primary-foreground` | Text on primary surfaces |
+| `--secondary` | `bg-secondary` | Secondary surface color |
+| `--secondary-foreground` | `text-secondary-foreground` | Text on secondary surfaces |
+| `--muted` | `bg-muted` | Muted / subdued background |
+| `--muted-foreground` | `text-muted-foreground` | Subdued text |
+| `--accent` | `bg-accent` | Hover and highlight tint |
+| `--accent-foreground` | `text-accent-foreground` | Text on accent surfaces |
+| `--destructive` | `bg-destructive` | Error / destructive action color |
+| `--destructive-foreground` | `text-destructive-foreground` | Text on destructive surfaces |
+| `--border` | `border-border` | Default border color |
+| `--input` | `border-input` | Input field border color |
+| `--ring` | `ring-ring` | Focus ring color |
+| `--card` | `bg-card` | Card surface background |
+| `--card-foreground` | `text-card-foreground` | Text on card surfaces |
+| `--popover` | `bg-popover` | Floating surface background |
+| `--popover-foreground` | `text-popover-foreground` | Text on floating surfaces |
+
+## Migrating from shadcn/ui
+
+Because baseui-cn uses identical CSS variable names to shadcn/ui, migrating your theme requires no renaming. Copy your existing `:root` and `.dark` variable block directly into your global stylesheet and every baseui-cn component will pick it up immediately.
+
+<Note>
+  The component source files themselves are different — baseui-cn components use `@base-ui/react` primitives rather than Radix UI. Only the CSS variable tokens are compatible. You will need to replace component files rather than copying them from a shadcn/ui project.
+</Note>

@@ -1,0 +1,254 @@
+---
+title: "AlertDialog: Confirmation Modal with Required Action"
+sidebarTitle: "AlertDialog"
+description: "AlertDialog requires explicit user confirmation before a destructive action. Focus is trapped inside and the dialog cannot be dismissed by clicking the backdrop."
+---
+
+AlertDialog is a modal dialog that forces the user to make an explicit choice before proceeding. Unlike the standard Dialog, it cannot be closed by clicking the backdrop or pressing Escape — the user must click either the confirm action or the cancel button. Focus is trapped inside the panel until one of those choices is made. This intentional friction is appropriate for destructive or irreversible operations such as deleting an account, removing data, or publishing content that cannot be unpublished. Use the regular Dialog for non-critical interactions that don't require this level of intent confirmation.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add alert-dialog
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install `@base-ui/react` manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/alert-dialog.tsx` from the repository into your project.
+  </Step>
+  <Step title="Update import paths">
+    Adjust the `@/` alias to match your project's path configuration.
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
+```
+
+## Usage
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger render={<Button variant="destructive">Delete account</Button>} />
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove all associated data from our servers.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction variant="destructive">Delete account</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+<Warning>
+  AlertDialog cannot be dismissed by clicking outside the panel or pressing Escape. Reserve it for truly destructive or irreversible actions. For non-critical confirmations, use the standard `Dialog` component instead.
+</Warning>
+
+<Note>
+  Base UI uses a `render` prop instead of `asChild`. Pass your custom trigger to `AlertDialogTrigger` via `render={<Button />}`.
+</Note>
+
+## Examples
+
+### Delete confirmation
+
+The classic destructive confirmation pattern — an outlined Cancel and a red Action button.
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { TrashIcon } from "lucide-react"
+
+export function DeleteConfirmationExample() {
+  function handleDelete() {
+    // perform delete …
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger
+        render={
+          <Button variant="destructive">
+            <TrashIcon className="mr-2 size-4" />
+            Delete project
+          </Button>
+        }
+      />
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete project?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will permanently delete the project and all its data. There is
+            no way to undo this action.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={handleDelete}>
+            Yes, delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+```
+
+### Controlled alert dialog
+
+Manage open state externally — useful when you need to trigger the dialog from logic rather than a button click.
+
+```tsx
+import { useState } from "react"
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+
+export function ControlledAlertDialogExample() {
+  const [open, setOpen] = useState(false)
+
+  function handleConfirm() {
+    // perform action …
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Publish release
+      </Button>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Publish this release?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will make the release publicly available. Ensure all
+              changes have been reviewed before proceeding.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go back</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm}>Publish</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  )
+}
+```
+
+### Small size variant
+
+Use `size="sm"` for a more compact confirmation dialog when the message is short.
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+
+export function SmallAlertDialogExample() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger render={<Button variant="outline">Remove member</Button>} />
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove member?</AlertDialogTitle>
+          <AlertDialogDescription>
+            They will lose access to this workspace immediately.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive">Remove</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+```
+
+## API Reference
+
+### AlertDialogContent
+
+| Prop   | Type                      | Default     | Description                     |
+| ------ | ------------------------- | ----------- | ------------------------------- |
+| `size` | `"default" \| "sm"`      | `"default"` | Max-width of the dialog panel   |
+
+### AlertDialogAction
+
+Renders a `Button`. Accepts all `Button` props.
+
+| Prop      | Type                                                                                          | Default     | Description          |
+| --------- | --------------------------------------------------------------------------------------------- | ----------- | -------------------- |
+| `variant` | `"default" \| "destructive" \| "ghost" \| "link" \| "outline" \| "secondary" \| "warning"` | `"default"` | Visual style variant |
+| `size`    | `"xs" \| "sm" \| "default" \| "md" \| "lg" \| "xl" \| "icon"`                                | `"default"` | Button size          |
+
+### AlertDialogCancel
+
+Renders a `Button`. Accepts all `Button` props.
+
+| Prop      | Type                                                                                          | Default     | Description          |
+| --------- | --------------------------------------------------------------------------------------------- | ----------- | -------------------- |
+| `variant` | `"default" \| "destructive" \| "ghost" \| "link" \| "outline" \| "secondary" \| "warning"` | `"outline"` | Visual style variant |
+| `size`    | `"xs" \| "sm" \| "default" \| "md" \| "lg" \| "xl" \| "icon"`                                | `"default"` | Button size          |
+
+### AlertDialogTrigger
+
+Accepts all Base UI `AlertDialog.Trigger` props. Use the `render` prop to supply a custom trigger element.

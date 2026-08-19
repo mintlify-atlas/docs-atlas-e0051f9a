@@ -1,0 +1,186 @@
+---
+title: "Accordion: Collapsible Content Sections with Animation"
+sidebarTitle: "Accordion"
+description: "Accordion renders a vertically stacked set of collapsible sections built on Base UI's Accordion primitive. Supports single and multiple open panels."
+---
+
+Accordion presents a list of headings that each toggle an associated content panel. Built on Base UI's `Accordion` primitive, it delivers WAI-ARIA-compliant expand/collapse behaviour, smooth height-transition animations powered by CSS custom properties, and a rotating chevron indicator — all without JavaScript-measured heights or layout thrashing.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add accordion
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install dependencies">
+  Run the manual install command above to add `@base-ui/react` and `lucide-react` to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/accordion.tsx` into your project and adjust the import alias if needed.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and that Tailwind CSS v4 is configured.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion"
+```
+
+```tsx
+<Accordion defaultValue={["item-1"]}>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+    <AccordionContent>
+      Yes. Built on Base UI with full ARIA and keyboard support.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="item-2">
+    <AccordionTrigger>Is it animated?</AccordionTrigger>
+    <AccordionContent>
+      Yes. The panel height transitions smoothly using CSS custom properties.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+<Note>
+  `AccordionContent` is an alias for `AccordionPanel` exported from the component file. Both names refer to the same component.
+</Note>
+
+## Props / API
+
+### Accordion
+
+`Accordion` forwards all props to `AccordionPrimitive.Root` from `@base-ui/react/accordion`.
+
+| Prop           | Type                     | Default | Description                                                                   |
+| -------------- | ------------------------ | ------- | ----------------------------------------------------------------------------- |
+| `defaultValue` | `string[]`               | —       | Array of item values open by default (uncontrolled).                          |
+| `value`        | `string[]`               | —       | Controlled array of currently open item values.                               |
+| `onValueChange`| `(value: string[]) => void` | —    | Callback fired when the set of open items changes.                            |
+| `multiple`     | `boolean`                | `false` | When `true`, multiple items may be open simultaneously.                       |
+| `className`    | `string`                 | —       | Extra classes applied to the root element.                                    |
+
+### AccordionItem
+
+| Prop       | Type      | Default | Description                                                          |
+| ---------- | --------- | ------- | -------------------------------------------------------------------- |
+| `value`    | `string`  | —       | **Required.** Unique identifier for this item within the accordion.  |
+| `disabled` | `boolean` | `false` | Prevents the item from being opened or closed.                       |
+| `className`| `string`  | —       | Extra classes applied to the item wrapper.                           |
+
+### AccordionTrigger
+
+| Prop       | Type     | Default | Description                                          |
+| ---------- | -------- | ------- | ---------------------------------------------------- |
+| `children` | `ReactNode` | —    | Label content rendered inside the trigger button.    |
+| `className`| `string` | —       | Extra classes applied to the trigger button element. |
+
+### AccordionContent
+
+Alias: `AccordionPanel`.
+
+| Prop       | Type        | Default | Description                                           |
+| ---------- | ----------- | ------- | ----------------------------------------------------- |
+| `children` | `ReactNode` | —       | Content displayed when the accordion item is open.    |
+| `className`| `string`    | —       | Extra classes applied to the inner content container. |
+
+## Examples
+
+### Multiple open panels
+
+Pass the `multiple` prop to allow more than one item to be open at a time.
+
+```tsx
+<Accordion multiple defaultValue={["item-1", "item-2"]}>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>First section</AccordionTrigger>
+    <AccordionContent>Content for the first section.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="item-2">
+    <AccordionTrigger>Second section</AccordionTrigger>
+    <AccordionContent>Content for the second section.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="item-3">
+    <AccordionTrigger>Third section</AccordionTrigger>
+    <AccordionContent>Content for the third section.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Disabled item
+
+Apply `disabled` to an individual `AccordionItem` to prevent it from being opened or closed.
+
+```tsx
+<Accordion defaultValue={["item-1"]}>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Available section</AccordionTrigger>
+    <AccordionContent>This item can be toggled freely.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="item-2" disabled>
+    <AccordionTrigger>Locked section</AccordionTrigger>
+    <AccordionContent>This content is inaccessible.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Controlled accordion
+
+Manage the open state externally — useful when you need to drive the accordion from outside (e.g., a search filter that auto-expands matching sections).
+
+```tsx
+import { useState } from "react"
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion"
+
+export function ControlledAccordion() {
+  const [open, setOpen] = useState<string[]>(["faq-1"])
+
+  return (
+    <Accordion value={open} onValueChange={setOpen} multiple>
+      <AccordionItem value="faq-1">
+        <AccordionTrigger>What is Base UI?</AccordionTrigger>
+        <AccordionContent>
+          Base UI is an unstyled React component library from the MUI team.
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="faq-2">
+        <AccordionTrigger>What is baseui-cn?</AccordionTrigger>
+        <AccordionContent>
+          A shadcn-style component registry built exclusively on Base UI primitives with Tailwind CSS v4.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  )
+}
+```
+
+<Tip>
+  For a single independent toggle that isn't part of a group, use the `Collapsible` component instead.
+</Tip>

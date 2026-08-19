@@ -1,0 +1,332 @@
+---
+title: "Command: Command Palette with Search and Keyboard Nav"
+sidebarTitle: "Command"
+description: "Command renders a searchable command palette for quick navigation and actions. Supports groups, empty states, keyboard navigation, and a Dialog wrapper variant."
+---
+
+Command renders a searchable command palette — a keyboard-first interface that lets users quickly find and execute actions, navigate routes, or switch contexts. It is built on Base UI's `Dialog` and autocomplete primitives, which means it inherits accessible focus management, portal rendering, and keyboard navigation without any extra configuration. The palette can be rendered inline on a page, or wrapped in `CommandDialog` for the classic modal overlay triggered by a keyboard shortcut. Items are organized into `CommandGroup` sections, highlighted automatically as the user types, and fully navigable with arrow keys and Enter.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add command
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install the packages manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/command.tsx` from the repository into your project.
+  </Step>
+  <Step title="Update import paths">
+    Adjust the `@/` alias to match your project's path configuration.
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  Command,
+  CommandDialog,
+  CommandDialogPopup,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandGroupLabel,
+  CommandCollection,
+  CommandItem,
+  CommandSeparator,
+  CommandShortcut,
+  CommandFooter,
+} from "@/components/ui/command"
+```
+
+## Usage
+
+```tsx
+<CommandDialog open={open} onOpenChange={setOpen}>
+  <CommandDialogPopup>
+    <Command items={groups}>
+      <CommandInput placeholder="Search actions..." />
+      <CommandPanel>
+        <CommandEmpty>No matches found.</CommandEmpty>
+        <CommandList>
+          {(group) => (
+            <CommandGroup key={group.value} items={group.items}>
+              <CommandGroupLabel>{group.value}</CommandGroupLabel>
+              <CommandCollection>
+                {(item) => (
+                  <CommandItem key={item.value} value={item.value}>
+                    {item.label}
+                  </CommandItem>
+                )}
+              </CommandCollection>
+            </CommandGroup>
+          )}
+        </CommandList>
+      </CommandPanel>
+    </Command>
+  </CommandDialogPopup>
+</CommandDialog>
+```
+
+<Tip>
+  Trigger the command dialog from anywhere in your app with a global keyboard shortcut. See the Keyboard shortcut example below.
+</Tip>
+
+## Examples
+
+### Global keyboard shortcut dialog
+
+The most common pattern — open the command palette with `⌘K` (or `Ctrl+K` on Windows/Linux).
+
+```tsx
+"use client"
+
+import { useEffect, useState } from "react"
+import {
+  Command,
+  CommandDialog,
+  CommandDialogPopup,
+  CommandInput,
+  CommandPanel,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandGroupLabel,
+  CommandCollection,
+  CommandItem,
+  CommandShortcut,
+} from "@/components/ui/command"
+import { Button } from "@/components/ui/button"
+import {
+  FileIcon,
+  SettingsIcon,
+  UserIcon,
+  SearchIcon,
+} from "lucide-react"
+
+const groups = [
+  {
+    value: "Navigation",
+    items: [
+      { value: "dashboard", label: "Go to Dashboard", icon: <FileIcon className="size-4" />, shortcut: "G D" },
+      { value: "settings", label: "Open Settings", icon: <SettingsIcon className="size-4" />, shortcut: "G S" },
+      { value: "profile", label: "View Profile", icon: <UserIcon className="size-4" />, shortcut: "G P" },
+    ],
+  },
+]
+
+export function CommandPaletteExample() {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault()
+        setOpen((prev) => !prev)
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        <SearchIcon className="mr-2 size-4" />
+        Search
+        <CommandShortcut>⌘K</CommandShortcut>
+      </Button>
+
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandDialogPopup>
+          <Command items={groups}>
+            <CommandInput placeholder="Type a command or search..." />
+            <CommandPanel>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandList>
+                {(group) => (
+                  <CommandGroup key={group.value} items={group.items}>
+                    <CommandGroupLabel>{group.value}</CommandGroupLabel>
+                    <CommandCollection>
+                      {(item) => (
+                        <CommandItem key={item.value} value={item.value}>
+                          {item.icon}
+                          {item.label}
+                          <CommandShortcut>{item.shortcut}</CommandShortcut>
+                        </CommandItem>
+                      )}
+                    </CommandCollection>
+                  </CommandGroup>
+                )}
+              </CommandList>
+            </CommandPanel>
+          </Command>
+        </CommandDialogPopup>
+      </CommandDialog>
+    </>
+  )
+}
+```
+
+### Inline command palette
+
+Render the palette inline on the page — no dialog wrapper needed. Useful for search bars or embedded navigation panels.
+
+```tsx
+import {
+  Command,
+  CommandInput,
+  CommandPanel,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandGroupLabel,
+  CommandCollection,
+  CommandItem,
+} from "@/components/ui/command"
+
+const items = [
+  {
+    value: "Actions",
+    items: [
+      { value: "new-file", label: "New file" },
+      { value: "new-folder", label: "New folder" },
+      { value: "clone-repo", label: "Clone repository" },
+    ],
+  },
+]
+
+export function InlineCommandExample() {
+  return (
+    <div className="border rounded-lg overflow-hidden w-full max-w-md">
+      <Command items={items}>
+        <CommandInput placeholder="Search actions..." />
+        <CommandPanel>
+          <CommandEmpty>No actions found.</CommandEmpty>
+          <CommandList>
+            {(group) => (
+              <CommandGroup key={group.value} items={group.items}>
+                <CommandGroupLabel>{group.value}</CommandGroupLabel>
+                <CommandCollection>
+                  {(item) => (
+                    <CommandItem key={item.value} value={item.value}>
+                      {item.label}
+                    </CommandItem>
+                  )}
+                </CommandCollection>
+              </CommandGroup>
+            )}
+          </CommandList>
+        </CommandPanel>
+      </Command>
+    </div>
+  )
+}
+```
+
+### Multi-group with separator
+
+Use `CommandSeparator` between groups when not using labeled sections, or combine both for complex palettes.
+
+```tsx
+import {
+  Command,
+  CommandInput,
+  CommandPanel,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandGroupLabel,
+  CommandCollection,
+  CommandItem,
+  CommandSeparator,
+} from "@/components/ui/command"
+import { FileIcon, SettingsIcon, HelpCircleIcon } from "lucide-react"
+
+const navItems = [
+  { value: "dashboard", label: "Dashboard", icon: <FileIcon className="size-4" /> },
+  { value: "projects", label: "Projects", icon: <FileIcon className="size-4" /> },
+]
+const settingsItems = [
+  { value: "account", label: "Account settings", icon: <SettingsIcon className="size-4" /> },
+  { value: "help", label: "Help & support", icon: <HelpCircleIcon className="size-4" /> },
+]
+
+const groups = [
+  { value: "Navigation", items: navItems },
+  { value: "Settings", items: settingsItems },
+]
+
+export function MultiGroupCommandExample() {
+  return (
+    <div className="border rounded-lg overflow-hidden w-full max-w-md">
+      <Command items={groups}>
+        <CommandInput placeholder="Type to search..." />
+        <CommandPanel>
+          <CommandEmpty>Nothing found.</CommandEmpty>
+          <CommandList>
+            {(group, index) => (
+              <>
+                {index > 0 && <CommandSeparator />}
+                <CommandGroup key={group.value} items={group.items}>
+                  <CommandGroupLabel>{group.value}</CommandGroupLabel>
+                  <CommandCollection>
+                    {(item) => (
+                      <CommandItem key={item.value} value={item.value}>
+                        {item.icon}
+                        {item.label}
+                      </CommandItem>
+                    )}
+                  </CommandCollection>
+                </CommandGroup>
+              </>
+            )}
+          </CommandList>
+        </CommandPanel>
+      </Command>
+    </div>
+  )
+}
+```
+
+## API Reference
+
+### Command
+
+| Prop            | Type                                 | Default    | Description                                                    |
+| --------------- | ------------------------------------ | ---------- | -------------------------------------------------------------- |
+| `items`         | `array`                              | —          | Data array passed to the list. Structure depends on your setup |
+| `autoHighlight` | `"always" \| "whenOpen" \| false`   | `"always"` | When to automatically highlight the first matching item        |
+| `keepHighlight` | `boolean`                            | `true`     | Keep the highlighted item highlighted after the list updates   |
+
+### Exports summary
+
+| Export               | Description                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| `Command`            | Root component. Renders the inline palette surface                                          |
+| `CommandDialog`      | Dialog shell for the overlay variant — accepts `open` and `onOpenChange`                    |
+| `CommandDialogPopup` | Inner popup container used inside `CommandDialog`                                           |
+| `CommandInput`       | Search input. Filters items as the user types                                               |
+| `CommandPanel`       | Scrollable results area wrapping the list                                                   |
+| `CommandList`        | Render-prop list. Receives each group and renders it                                        |
+| `CommandGroup`       | Groups related items. Pass `items` array and nest `CommandCollection` inside                |
+| `CommandGroupLabel`  | Section heading for a group                                                                 |
+| `CommandCollection`  | Render-prop collection inside a group. Receives each item                                   |
+| `CommandItem`        | Individual selectable item. Accepts `value` for filtering                                   |
+| `CommandEmpty`       | Displayed when no items match the current query                                             |
+| `CommandSeparator`   | Visual divider between groups                                                               |
+| `CommandShortcut`    | Slot for keyboard shortcut hints displayed at the end of a trigger or item                  |
+| `CommandFooter`      | Optional bottom bar inside the palette for hints or actions                                 |

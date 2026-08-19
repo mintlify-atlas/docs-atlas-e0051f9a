@@ -1,0 +1,158 @@
+---
+title: "Tabs: Accessible Panel Switcher with Keyboard Support"
+sidebarTitle: "Tabs"
+description: "Tabs render an accessible panel switcher built on Base UI's Tabs primitive. Supports horizontal and vertical orientations, controlled state, and keyboard navigation."
+---
+
+Tabs organise related content into discrete panels so only one section is visible at a time. Built on top of Base UI's `Tabs` primitive, this component delivers full WAI-ARIA compliance, roving-focus keyboard navigation (arrow keys, Home, End), and smooth animated indicator transitions — all styled with Tailwind CSS v4 and zero external CSS.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add tabs
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install the dependency">
+  Run the manual install command above to add `@base-ui/react` to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/tabs.tsx` into your project and adjust the import alias if needed.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and that Tailwind CSS v4 is configured.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+```
+
+```tsx
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Account settings.</TabsContent>
+  <TabsContent value="password">Password settings.</TabsContent>
+</Tabs>
+```
+
+## Props / API
+
+### Tabs
+
+`Tabs` forwards all props to `TabsPrimitive.Root` from `@base-ui/react/tabs`.
+
+| Prop           | Type                          | Default        | Description                                                              |
+| -------------- | ----------------------------- | -------------- | ------------------------------------------------------------------------ |
+| `defaultValue` | `string`                      | —              | The value of the tab that is active on initial render (uncontrolled).    |
+| `value`        | `string`                      | —              | The controlled active tab value.                                         |
+| `onValueChange`| `(value: string) => void`     | —              | Callback fired when the active tab changes.                              |
+| `orientation`  | `"horizontal" \| "vertical"`  | `"horizontal"` | Orientation of the tab list; affects layout and keyboard navigation.     |
+| `className`    | `string`                      | —              | Extra classes applied to the root element.                               |
+
+### TabsList
+
+| Prop        | Type                                   | Default     | Description                                                                  |
+| ----------- | -------------------------------------- | ----------- | ---------------------------------------------------------------------------- |
+| `variant`   | `"default" \| "underline" \| "line"`   | `"default"` | Visual style — pill/chip indicator (`default`) or underline indicator.       |
+| `className` | `string`                               | —           | Extra classes applied to the list element.                                   |
+
+### TabsTrigger
+
+`TabsTrigger` forwards all props to `TabsPrimitive.Tab`. Key prop:
+
+| Prop       | Type      | Default | Description                                                     |
+| ---------- | --------- | ------- | --------------------------------------------------------------- |
+| `value`    | `string`  | —       | **Required.** The value this trigger corresponds to.            |
+| `disabled` | `boolean` | `false` | Prevents selection and interaction for this individual tab.     |
+| `className`| `string`  | —       | Extra classes applied to the trigger button.                    |
+
+### TabsContent
+
+`TabsContent` forwards all props to `TabsPrimitive.Panel`. Key prop:
+
+| Prop       | Type     | Default | Description                                              |
+| ---------- | -------- | ------- | -------------------------------------------------------- |
+| `value`    | `string` | —       | **Required.** Matches the `TabsTrigger` value to render. |
+| `className`| `string` | —       | Extra classes applied to the panel element.              |
+
+## Examples
+
+### Underline variant
+
+Use the `variant="underline"` (or the alias `"line"`) prop on `TabsList` for a minimal underline-style indicator, ideal for content-heavy pages.
+
+```tsx
+<Tabs defaultValue="overview">
+  <TabsList variant="underline">
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+    <TabsTrigger value="settings">Settings</TabsTrigger>
+  </TabsList>
+  <TabsContent value="overview">Overview content here.</TabsContent>
+  <TabsContent value="analytics">Analytics content here.</TabsContent>
+  <TabsContent value="settings">Settings content here.</TabsContent>
+</Tabs>
+```
+
+### Vertical orientation
+
+Set `orientation="vertical"` on the root `Tabs` component to stack the trigger list alongside the content panel.
+
+```tsx
+<Tabs defaultValue="profile" orientation="vertical">
+  <TabsList>
+    <TabsTrigger value="profile">Profile</TabsTrigger>
+    <TabsTrigger value="billing">Billing</TabsTrigger>
+    <TabsTrigger value="security">Security</TabsTrigger>
+  </TabsList>
+  <TabsContent value="profile">Manage your profile details.</TabsContent>
+  <TabsContent value="billing">Update payment methods.</TabsContent>
+  <TabsContent value="security">Change password and 2FA.</TabsContent>
+</Tabs>
+```
+
+### Controlled tabs
+
+Manage the active tab externally with `value` and `onValueChange` for programmatic control, such as syncing with a URL query parameter.
+
+```tsx
+import { useState } from "react"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+
+export function ControlledTabs() {
+  const [active, setActive] = useState("posts")
+
+  return (
+    <Tabs value={active} onValueChange={setActive}>
+      <TabsList>
+        <TabsTrigger value="posts">Posts</TabsTrigger>
+        <TabsTrigger value="drafts">Drafts</TabsTrigger>
+      </TabsList>
+      <TabsContent value="posts">Your published posts.</TabsContent>
+      <TabsContent value="drafts">Your unpublished drafts.</TabsContent>
+    </Tabs>
+  )
+}
+```
+
+<Note>
+  The `"line"` variant is an alias for `"underline"` — both produce the same underline indicator style.
+</Note>

@@ -1,0 +1,219 @@
+---
+title: "Select: Dropdown Option Picker with Floating Listbox"
+sidebarTitle: "Select"
+description: "Select renders a trigger button that opens a floating listbox of options. Built on Base UI's Select primitive — works correctly inside Drawer and Dialog overlays."
+---
+
+`Select` renders a trigger button that opens a floating, animated listbox. It is built entirely on Base UI's `Select` primitive, which means the popup is rendered in a portal and positioned correctly relative to the trigger — even when the trigger lives inside a `Drawer`, `Dialog`, or other stacking context. No `z-index` hacks required.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add select
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/select.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+} from "@/components/ui/select"
+```
+
+```tsx
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a framework" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>Frameworks</SelectLabel>
+      <SelectItem value="next">Next.js</SelectItem>
+      <SelectItem value="remix">Remix</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+## Examples
+
+### With groups and separator
+
+Use `SelectGroup`, `SelectLabel`, and `SelectSeparator` to organise long option lists.
+
+```tsx
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+} from "@/components/ui/select"
+
+export function SelectWithGroups() {
+  return (
+    <Select>
+      <SelectTrigger className="w-56">
+        <SelectValue placeholder="Pick a timezone" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>North America</SelectLabel>
+          <SelectItem value="est">Eastern (EST)</SelectItem>
+          <SelectItem value="cst">Central (CST)</SelectItem>
+          <SelectItem value="pst">Pacific (PST)</SelectItem>
+        </SelectGroup>
+        <SelectSeparator />
+        <SelectGroup>
+          <SelectLabel>Europe</SelectLabel>
+          <SelectItem value="gmt">London (GMT)</SelectItem>
+          <SelectItem value="cet">Berlin (CET)</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  )
+}
+```
+
+### Controlled
+
+Pass `value` and `onValueChange` to drive selection from external state.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
+
+export function SelectControlled() {
+  const [value, setValue] = useState("")
+
+  return (
+    <Select value={value} onValueChange={setValue}>
+      <SelectTrigger className="w-48">
+        <SelectValue placeholder="Select status" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="active">Active</SelectItem>
+        <SelectItem value="paused">Paused</SelectItem>
+        <SelectItem value="archived">Archived</SelectItem>
+      </SelectContent>
+    </Select>
+  )
+}
+```
+
+### Trigger sizes
+
+`SelectTrigger` accepts a `size` prop that matches the rest of the form component family.
+
+```tsx
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
+
+export function SelectSizes() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Select>
+        <SelectTrigger size="sm">
+          <SelectValue placeholder="Small" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">Option A</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select>
+        <SelectTrigger size="default">
+          <SelectValue placeholder="Default" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">Option A</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select>
+        <SelectTrigger size="lg">
+          <SelectValue placeholder="Large" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">Option A</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+```
+
+<Tip>
+  `Select` works correctly inside `Drawer` and `Dialog` overlays without any `z-index` overrides because the listbox is rendered via a portal and positioned by Base UI's built-in floating engine.
+</Tip>
+
+## API
+
+### Select
+
+`Select` is a direct alias for `Select.Root` from `@base-ui/react/select`. All Base UI `Select.Root` props are accepted.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | Controlled selected value |
+| `defaultValue` | `string` | — | Uncontrolled initial value |
+| `onValueChange` | `(value: string) => void` | — | Fires when the selected value changes |
+| `disabled` | `boolean` | `false` | Disables the entire select |
+| `name` | `string` | — | Form field name submitted with the form |
+| `required` | `boolean` | `false` | Marks the field as required |
+
+### SelectTrigger
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Height of the trigger button |
+
+### SelectContent
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Which side of the trigger the listbox opens toward |
+| `sideOffset` | `number` | `4` | Distance in px between the listbox and the trigger |
+| `align` | `"start" \| "center" \| "end"` | `"center"` | Alignment of the listbox relative to the trigger |
+| `alignOffset` | `number` | `0` | Offset in px along the alignment axis |
+| `alignItemWithTrigger` | `boolean` | `true` | Visually align the selected item inside the popup with the trigger text |
+
+### SelectItem
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | The value this item represents |
+| `disabled` | `boolean` | `false` | Prevents this item from being selected |

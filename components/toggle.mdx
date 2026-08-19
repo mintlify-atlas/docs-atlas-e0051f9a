@@ -1,0 +1,205 @@
+---
+title: "Toggle and ToggleGroup: Two-State Button Controls"
+sidebarTitle: "Toggle"
+description: "Toggle is a two-state button for on/off actions. ToggleGroup wraps multiple Toggles for single or multi-select toolbar controls like text formatting."
+---
+
+Toggle is a two-state button built on `@base-ui/react/toggle` that manages pressed/unpressed state with full keyboard and accessibility support. `ToggleGroup` wraps multiple toggle items built on `@base-ui/react/toggle-group` for single-select or multi-select toolbar controls — think bold, italic, underline, or view-mode switches. Both components accept the same `variant` and `size` props so they always stay visually consistent.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add toggle
+```
+
+```bash Manual
+npm install @base-ui/react class-variance-authority
+# Then copy the component sources into:
+# components/ui/toggle.tsx
+# components/ui/toggle-group.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { Toggle } from "@/components/ui/toggle"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+  ToggleGroupSeparator,
+} from "@/components/ui/toggle-group"
+```
+
+```tsx
+<Toggle aria-label="Toggle bold">
+  <Bold className="size-4" />
+</Toggle>
+```
+
+## Examples
+
+### Basic Toggle
+
+A single toggle with an icon and an accessible label.
+
+```tsx
+import { Bold } from "lucide-react"
+import { Toggle } from "@/components/ui/toggle"
+
+export function ToggleBasic() {
+  return (
+    <Toggle aria-label="Toggle bold">
+      <Bold />
+    </Toggle>
+  )
+}
+```
+
+### With Text Label
+
+Combine an icon and visible text in the same toggle.
+
+```tsx
+import { Italic } from "lucide-react"
+import { Toggle } from "@/components/ui/toggle"
+
+export function ToggleWithText() {
+  return (
+    <Toggle aria-label="Toggle italic">
+      <Italic />
+      Italic
+    </Toggle>
+  )
+}
+```
+
+### Variants
+
+Use `variant="outline"` for a bordered toggle that matches outlined button styles.
+
+```tsx
+import { Bold, Italic, Underline } from "lucide-react"
+import { Toggle } from "@/components/ui/toggle"
+
+export function ToggleVariants() {
+  return (
+    <div className="flex gap-2">
+      <Toggle variant="default" aria-label="Bold">
+        <Bold />
+      </Toggle>
+      <Toggle variant="outline" aria-label="Italic">
+        <Italic />
+      </Toggle>
+    </div>
+  )
+}
+```
+
+### Sizes
+
+Three sizes available: `sm`, `default`, and `lg`.
+
+```tsx
+import { AlignCenter } from "lucide-react"
+import { Toggle } from "@/components/ui/toggle"
+
+export function ToggleSizes() {
+  return (
+    <div className="flex items-center gap-2">
+      <Toggle size="sm" aria-label="Align center small">
+        <AlignCenter />
+      </Toggle>
+      <Toggle size="default" aria-label="Align center">
+        <AlignCenter />
+      </Toggle>
+      <Toggle size="lg" aria-label="Align center large">
+        <AlignCenter />
+      </Toggle>
+    </div>
+  )
+}
+```
+
+### ToggleGroup for Text Formatting
+
+`ToggleGroup` manages multi-select state across its child items. Pass `variant` and `size` once on the group and all items inherit them.
+
+```tsx
+import { Bold, Italic, Strikethrough, Underline } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+
+export function ToggleGroupFormatting() {
+  return (
+    <ToggleGroup variant="outline" aria-label="Text formatting">
+      <ToggleGroupItem value="bold" aria-label="Bold">
+        <Bold />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="italic" aria-label="Italic">
+        <Italic />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="underline" aria-label="Underline">
+        <Underline />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="strikethrough" aria-label="Strikethrough">
+        <Strikethrough />
+      </ToggleGroupItem>
+    </ToggleGroup>
+  )
+}
+```
+
+### ToggleGroup Single Select
+
+Set `toggleMultiple={false}` on `ToggleGroup` to allow only one active item at a time — useful for view-mode switchers.
+
+```tsx
+import { LayoutGrid, List, Table2 } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+
+export function ToggleGroupViewMode() {
+  return (
+    <ToggleGroup variant="outline" aria-label="View mode">
+      <ToggleGroupItem value="grid" aria-label="Grid view">
+        <LayoutGrid />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="list" aria-label="List view">
+        <List />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="table" aria-label="Table view">
+        <Table2 />
+      </ToggleGroupItem>
+    </ToggleGroup>
+  )
+}
+```
+
+<Note>
+  `ToggleGroup` passes its `variant` and `size` to all `ToggleGroupItem` children via React context. You only need to set them on the group itself.
+</Note>
+
+## Props
+
+### Toggle
+
+| Prop      | Type                        | Default     | Description                                                           |
+| --------- | --------------------------- | ----------- | --------------------------------------------------------------------- |
+| `variant` | `"default" \| "outline"`    | `"default"` | Border and background treatment — transparent (default) or outlined   |
+| `size`    | `"sm" \| "default" \| "lg"` | `"default"` | Height, min-width, and padding scale                                  |
+
+### ToggleGroup
+
+| Prop          | Type                           | Default        | Description                                                       |
+| ------------- | ------------------------------ | -------------- | ----------------------------------------------------------------- |
+| `variant`     | `"default" \| "outline"`       | `"default"`    | Inherited by all child `ToggleGroupItem` elements                 |
+| `size`        | `"sm" \| "default" \| "lg"`    | `"default"`    | Inherited by all child `ToggleGroupItem` elements                 |
+| `orientation` | `"horizontal" \| "vertical"`   | `"horizontal"` | Layout direction of the toggle group                              |
+
+### ToggleGroupItem
+
+Accepts the same `variant` and `size` props as `Toggle`. Values set here override the group context.
+
+| Prop    | Type     | Description                                          |
+| ------- | -------- | ---------------------------------------------------- |
+| `value` | `string` | **Required.** Unique identifier for this toggle item |

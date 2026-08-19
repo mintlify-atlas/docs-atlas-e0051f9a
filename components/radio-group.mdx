@@ -1,0 +1,145 @@
+---
+title: "RadioGroup: Exclusive Option Selection Controls"
+sidebarTitle: "RadioGroup"
+description: "RadioGroup renders a group of mutually exclusive radio buttons built on Base UI's RadioGroup primitive. Supports vertical and horizontal layouts and controlled usage."
+---
+
+`RadioGroup` wraps Base UI's `RadioGroup` primitive and exports `RadioGroupItem` for individual options. Only one item may be selected at a time. The group supports both vertical (default) and horizontal layouts, controlled and uncontrolled values, and disabled states on the group or individual items.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add radio-group
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/radio-group.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+```
+
+```tsx
+<RadioGroup defaultValue="option-1">
+  <RadioGroupItem value="option-1" id="opt1" />
+  <label htmlFor="opt1">Option 1</label>
+</RadioGroup>
+```
+
+## Examples
+
+### With labels
+
+Pair each `RadioGroupItem` with a `<label>` using matching `id` / `htmlFor` values for a fully accessible group.
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
+export function RadioGroupWithLabels() {
+  return (
+    <RadioGroup defaultValue="comfortable" aria-label="Display density">
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="compact" id="compact" />
+        <label htmlFor="compact" className="text-sm select-none">Compact</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="comfortable" id="comfortable" />
+        <label htmlFor="comfortable" className="text-sm select-none">Comfortable</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="spacious" id="spacious" />
+        <label htmlFor="spacious" className="text-sm select-none">Spacious</label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+### Horizontal layout
+
+Apply a flex row to the wrapper to produce a horizontal group.
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
+export function RadioGroupHorizontal() {
+  return (
+    <RadioGroup defaultValue="card" aria-label="Payment method" className="flex flex-row gap-4">
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="card" id="card" />
+        <label htmlFor="card" className="text-sm select-none">Card</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="paypal" id="paypal" />
+        <label htmlFor="paypal" className="text-sm select-none">PayPal</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="bank" id="bank" />
+        <label htmlFor="bank" className="text-sm select-none">Bank transfer</label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+### Controlled
+
+Pass `value` and `onValueChange` to manage selection state externally.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
+export function RadioGroupControlled() {
+  const [value, setValue] = useState("light")
+
+  return (
+    <RadioGroup value={value} onValueChange={setValue} aria-label="Theme">
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="light" id="light" />
+        <label htmlFor="light" className="text-sm select-none">Light</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="dark" id="dark" />
+        <label htmlFor="dark" className="text-sm select-none">Dark</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="system" id="system" />
+        <label htmlFor="system" className="text-sm select-none">System</label>
+      </div>
+    </RadioGroup>
+  )
+}
+```
+
+## API
+
+### RadioGroup
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | Controlled selected value |
+| `defaultValue` | `string` | — | Uncontrolled initial selected value |
+| `onValueChange` | `(value: string) => void` | — | Fires when the selected value changes |
+| `disabled` | `boolean` | `false` | Disables all items in the group |
+| `name` | `string` | — | Form field name submitted with the form |
+| `required` | `boolean` | `false` | Marks the group as required in a form |
+| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | Arrow-key navigation direction |
+
+### RadioGroupItem
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | The value this item represents |
+| `disabled` | `boolean` | `false` | Disables this individual item |

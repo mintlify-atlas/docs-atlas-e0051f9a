@@ -1,0 +1,62 @@
+---
+title: "Base UI: Accessible React Components on One Primitive"
+sidebarTitle: "Introduction"
+description: "baseui-cn is a registry built on @base-ui/react. Install 50+ Tailwind-styled components that compose safely across overlays, focus traps, and portals."
+---
+
+baseui-cn is a shadcn-style component registry built exclusively on [`@base-ui/react`](https://base-ui.com). Every component — from buttons to drawers to comboboxes — shares one primitive layer, one portal system, and one focus management model. You install components with a single CLI command, they are copied directly into your project, and you own the code.
+
+## The problem with mixing UI libraries
+
+Most component registries, including shadcn/ui, pull from several different primitive libraries at once: Radix UI for dialogs and popovers, Vaul for drawers, Sonner for toasts, and cmdk for command palettes. Each library implements its own portal stack, focus trap, and event bubbling logic. When you compose them — opening a `Select` inside a `Drawer`, stacking a `Toast` over a `Dialog`, or rendering a `Combobox` inside an overlay — these systems collide in ways that are difficult to debug and impossible to fix without patching the libraries themselves.
+
+Common symptoms include:
+
+- A `Select` inside a `Drawer` steals focus and breaks keyboard navigation
+- Closing a Sonner toast dismisses the parent `Drawer` because they share an escape-key listener
+- A `Combobox` dropdown portals behind the overlay it lives inside
+- z-index wars that require hard-coded stacking workarounds
+
+baseui-cn eliminates these conflicts at the root. Every overlay, floating element, and interactive primitive in the registry is built on `@base-ui/react`. Because they all share one system, the following compositions work correctly with no extra wrappers or fixes:
+
+| Composition | Result |
+|---|---|
+| `Select` inside `Drawer` | Focus and keyboard navigation work correctly |
+| `Toast` inside `Drawer` or `Dialog` | Closing the toast does not close the parent |
+| `Combobox` inside any overlay | Dropdown renders in the correct stacking context |
+| Any overlay on top of another | One dependency to update, one API to learn |
+
+## The shadcn-style model
+
+baseui-cn follows the same ownership model as shadcn/ui. When you run `npx baseui-cn add button`, the component source file is copied into your `components/ui/` directory. There is no runtime library to update, no locked-in abstraction, and no black box. You read the code, you edit the code, and you ship the code. The CLI is only a delivery mechanism — after installation, the files belong to your project entirely.
+
+## Tech stack
+
+| Package | Version | Purpose |
+|---|---|---|
+| `@base-ui/react` | `^1.6.0` | All interactive primitives |
+| Tailwind CSS | v4 | Styling |
+| `class-variance-authority` | latest | Component variants |
+| `tailwind-merge` | latest | Safe class merging |
+| `clsx` | latest | Conditional class composition |
+
+## Framework support
+
+baseui-cn works with any React 18+ project. The `init` command auto-detects your project structure and configures paths accordingly.
+
+- **Next.js** (App Router and Pages Router)
+- **Vite**
+- **Remix**
+- **Astro**
+- Any other React 18+ framework
+
+## Get started
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="rocket" href="/installation">
+    Run `npx baseui-cn init` to set up dependencies, CSS variables, and the utils file in under a minute.
+  </Card>
+  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
+    Learn all four CLI commands — `init`, `add`, `update`, and `list` — with flags and real examples.
+  </Card>
+</CardGroup>

@@ -1,0 +1,190 @@
+---
+title: "Popover: Floating Content Panel Anchored to a Trigger"
+sidebarTitle: "Popover"
+description: "Popover renders a floating panel anchored to a trigger element. Built on Base UI's Popover primitive with smart repositioning and focus management."
+---
+
+Popover renders a floating panel that is anchored to a trigger button and positioned automatically relative to it. It is built on Base UI's `Popover` primitive, which means it renders into a shared portal, traps focus inside the panel when it opens, and flips or shifts position automatically to stay within the viewport. Unlike a Tooltip, a Popover can contain rich interactive content — forms, lists, pickers — because it is designed to receive and hold focus. Use it for date pickers, color selectors, filter panels, or any floating UI that needs more room than a tooltip provides.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add popover
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install `@base-ui/react` manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/popover.tsx` from the repository into your project.
+  </Step>
+  <Step title="Update import paths">
+    Adjust the `@/` alias to match your project's path configuration.
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverClose,
+} from "@/components/ui/popover"
+```
+
+## Usage
+
+```tsx
+<Popover>
+  <PopoverTrigger render={<Button variant="outline">Open popover</Button>} />
+  <PopoverContent>
+    <p className="text-sm">Popover content goes here.</p>
+  </PopoverContent>
+</Popover>
+```
+
+<Note>
+  Base UI uses a `render` prop instead of `asChild`. Pass your custom trigger element to `PopoverTrigger` via `render={<Button />}`.
+</Note>
+
+## Examples
+
+### Filter panel
+
+A common use case — a button that opens a floating panel with filter controls.
+
+```tsx
+import { useState } from "react"
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverClose,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { SlidersHorizontalIcon } from "lucide-react"
+
+export function FilterPopoverExample() {
+  const [inStock, setInStock] = useState(false)
+  const [onSale, setOnSale] = useState(false)
+
+  return (
+    <Popover>
+      <PopoverTrigger
+        render={
+          <Button variant="outline">
+            <SlidersHorizontalIcon className="mr-2 size-4" />
+            Filters
+          </Button>
+        }
+      />
+      <PopoverContent side="bottom" align="start" className="w-56">
+        <p className="text-sm font-medium mb-3">Filter products</p>
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 font-normal cursor-pointer">
+            <Checkbox checked={inStock} onCheckedChange={(v) => setInStock(!!v)} />
+            In stock only
+          </Label>
+          <Label className="flex items-center gap-2 font-normal cursor-pointer">
+            <Checkbox checked={onSale} onCheckedChange={(v) => setOnSale(!!v)} />
+            On sale
+          </Label>
+        </div>
+        <div className="mt-4 flex justify-end gap-2">
+          <PopoverClose render={<Button variant="ghost" size="sm">Reset</Button>} />
+          <PopoverClose render={<Button size="sm">Apply</Button>} />
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+### Placement
+
+Control which side of the trigger the popover opens on using the `side` prop.
+
+```tsx
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+
+export function PopoverPlacementExample() {
+  return (
+    <div className="flex items-center gap-4">
+      {(["top", "right", "bottom", "left"] as const).map((side) => (
+        <Popover key={side}>
+          <PopoverTrigger render={<Button variant="outline">{side}</Button>} />
+          <PopoverContent side={side}>
+            <p className="text-sm">Opens on {side}</p>
+          </PopoverContent>
+        </Popover>
+      ))}
+    </div>
+  )
+}
+```
+
+### Controlled popover
+
+Manage open state externally with `open` and `onOpenChange` for programmatic control.
+
+```tsx
+import { useState } from "react"
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverClose,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+
+export function ControlledPopoverExample() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger render={<Button variant="outline">Toggle</Button>} />
+      <PopoverContent>
+        <p className="text-sm mb-3">This popover is controlled externally.</p>
+        <PopoverClose render={<Button size="sm">Got it</Button>} />
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+## API Reference
+
+### PopoverContent
+
+| Prop          | Type                                       | Default     | Description                                         |
+| ------------- | ------------------------------------------ | ----------- | --------------------------------------------------- |
+| `side`        | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"`  | Side of the trigger the popover opens on            |
+| `sideOffset`  | `number`                                   | `4`         | Distance in px between the popover and the trigger  |
+| `align`       | `"start" \| "center" \| "end"`            | `"center"`  | Alignment of the popover relative to the trigger    |
+| `alignOffset` | `number`                                   | `0`         | Offset in px along the alignment axis               |
+
+### PopoverTrigger
+
+Accepts all Base UI `Popover.Trigger` props. Use the `render` prop to supply a custom trigger element.
+
+### PopoverClose
+
+Accepts all Base UI `Popover.Close` props. Use the `render` prop to render a custom close element inside the popover content.

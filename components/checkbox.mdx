@@ -1,0 +1,124 @@
+---
+title: "Checkbox: Accessible Toggle for Boolean Selections"
+sidebarTitle: "Checkbox"
+description: "Checkbox renders an accessible boolean toggle built on Base UI's Checkbox primitive. Supports indeterminate state, labels, disabled state, and controlled usage."
+---
+
+The `Checkbox` component is built on Base UI's `Checkbox.Root` primitive and renders a styled toggle that handles checked, unchecked, and indeterminate visual states. It participates in the `Field` context for automatic `aria-invalid` wiring and supports both controlled and uncontrolled usage.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add checkbox
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/checkbox.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import { Checkbox } from "@/components/ui/checkbox"
+```
+
+```tsx
+<Checkbox id="terms" />
+<label htmlFor="terms">Accept terms and conditions</label>
+```
+
+## Examples
+
+### With label
+
+Pair `Checkbox` with a `<label>` element linked via matching `id` / `htmlFor` attributes for a fully accessible toggle.
+
+```tsx
+import { Checkbox } from "@/components/ui/checkbox"
+
+export function CheckboxWithLabel() {
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox id="newsletter" />
+      <label htmlFor="newsletter" className="text-sm select-none">
+        Subscribe to the newsletter
+      </label>
+    </div>
+  )
+}
+```
+
+### Indeterminate state
+
+Pass `indeterminate` to render the dash indicator — useful for "select all" toggles that represent a partially selected list.
+
+```tsx
+import { Checkbox } from "@/components/ui/checkbox"
+
+export function CheckboxIndeterminate() {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <Checkbox id="select-all" indeterminate />
+        <label htmlFor="select-all" className="text-sm select-none">
+          Select all (3 of 5)
+        </label>
+      </div>
+    </div>
+  )
+}
+```
+
+### Controlled
+
+Manage checked state externally with `checked` and `onCheckedChange`.
+
+```tsx
+"use client"
+
+import { useState } from "react"
+import { Checkbox } from "@/components/ui/checkbox"
+
+export function CheckboxControlled() {
+  const [checked, setChecked] = useState<boolean | "mixed">(false)
+
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox
+        id="controlled"
+        checked={checked}
+        onCheckedChange={setChecked}
+      />
+      <label htmlFor="controlled" className="text-sm select-none">
+        {checked ? "Checked" : "Unchecked"}
+      </label>
+    </div>
+  )
+}
+```
+
+## API
+
+### Checkbox
+
+`Checkbox` forwards all props to `Checkbox.Root` from `@base-ui/react/checkbox`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checked` | `boolean \| "mixed"` | — | Controlled checked state. Use `"mixed"` for the indeterminate indicator |
+| `defaultChecked` | `boolean \| "mixed"` | `false` | Uncontrolled initial checked state |
+| `indeterminate` | `boolean` | `false` | Renders the dash indicator regardless of `checked` |
+| `onCheckedChange` | `(checked: boolean) => void` | — | Fires when the checked state changes |
+| `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity |
+| `required` | `boolean` | `false` | Marks the checkbox as required in a form |
+| `name` | `string` | — | Form field name submitted with the form |
+
+<Tip>
+  Use `Checkbox` inside a `Field` component to automatically link error states via `aria-invalid` without any extra wiring.
+</Tip>

@@ -1,0 +1,192 @@
+---
+title: "Tooltip: Contextual Info on Hover and Focus"
+sidebarTitle: "Tooltip"
+description: "Tooltip displays contextual information when a trigger is hovered or focused. Built on Base UI's Tooltip primitive with shared portal system and smart positioning."
+---
+
+Tooltip shows a small floating label next to a trigger element when the user hovers over it or focuses it with a keyboard. It is built on Base UI's `Tooltip` primitive and renders into a shared portal, so it always appears above other page content without z-index tuning. Positioning is handled automatically — the tooltip flips to stay within the viewport and can be nudged with `side`, `align`, and offset props. Wrapping multiple tooltips in a single `TooltipProvider` enables instant switching between triggers with no delay gap between sequential hovers.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add tooltip
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install `@base-ui/react` manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/tooltip.tsx` from the repository into your project.
+  </Step>
+  <Step title="Add TooltipProvider to your app">
+    Wrap your application (or at least the section using tooltips) in `TooltipProvider`. Placing it in `layout.tsx` means all tooltips share one provider.
+
+    ```tsx title="app/layout.tsx"
+    import { TooltipProvider } from "@/components/ui/tooltip"
+
+    export default function RootLayout({ children }: { children: React.ReactNode }) {
+      return (
+        <html lang="en">
+          <body>
+            <TooltipProvider>{children}</TooltipProvider>
+          </body>
+        </html>
+      )
+    }
+    ```
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
+```
+
+## Usage
+
+```tsx
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger render={<Button variant="ghost" size="icon"><SaveIcon /></Button>} />
+    <TooltipContent>Save document</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+<Note>
+  Base UI uses a `render` prop instead of `asChild`. Pass your custom trigger element to `TooltipTrigger` via `render={<Button />}`.
+</Note>
+
+## Examples
+
+### Icon button tooltip
+
+The most common pattern — a tooltip providing a text label for an icon-only button.
+
+```tsx
+import { SaveIcon, TrashIcon, ShareIcon } from "lucide-react"
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
+
+export function IconButtonTooltipsExample() {
+  return (
+    <TooltipProvider>
+      <div className="flex items-center gap-2">
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="ghost" size="icon"><SaveIcon className="size-4" /></Button>} />
+          <TooltipContent>Save (⌘S)</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="ghost" size="icon"><ShareIcon className="size-4" /></Button>} />
+          <TooltipContent>Share</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="ghost" size="icon" className="text-destructive"><TrashIcon className="size-4" /></Button>} />
+          <TooltipContent side="bottom">Delete</TooltipContent>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
+  )
+}
+```
+
+### Placement variants
+
+Control which side of the trigger the tooltip appears on using the `side` prop on `TooltipContent`.
+
+```tsx
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
+
+export function TooltipPlacementExample() {
+  return (
+    <TooltipProvider>
+      <div className="flex items-center gap-4">
+        {(["top", "right", "bottom", "left"] as const).map((side) => (
+          <Tooltip key={side}>
+            <TooltipTrigger render={<Button variant="outline">{side}</Button>} />
+            <TooltipContent side={side}>Tooltip on {side}</TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
+    </TooltipProvider>
+  )
+}
+```
+
+### Tooltip with keyboard shortcut
+
+Combine a label and a keyboard shortcut badge inside `TooltipContent` for richer hints.
+
+```tsx
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
+import { SearchIcon } from "lucide-react"
+
+export function TooltipWithShortcutExample() {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger render={<Button variant="ghost" size="icon"><SearchIcon className="size-4" /></Button>} />
+        <TooltipContent>
+          Search <Kbd>⌘K</Kbd>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+```
+
+## API Reference
+
+### TooltipProvider
+
+Wraps multiple tooltips to share a single delay group. All tooltips inside one provider switch instantly after the first one is shown.
+
+| Prop    | Type     | Default | Description                                           |
+| ------- | -------- | ------- | ----------------------------------------------------- |
+| `delay` | `number` | `0`     | Delay in milliseconds before a tooltip first appears  |
+
+### TooltipContent
+
+| Prop          | Type                                       | Default    | Description                                         |
+| ------------- | ------------------------------------------ | ---------- | --------------------------------------------------- |
+| `side`        | `"top" \| "bottom" \| "left" \| "right"` | `"top"`    | Side of the trigger the tooltip appears on          |
+| `sideOffset`  | `number`                                   | `4`        | Distance in px between the tooltip and the trigger  |
+| `align`       | `"start" \| "center" \| "end"`            | `"center"` | Alignment of the tooltip relative to the trigger    |
+| `alignOffset` | `number`                                   | `0`        | Offset in px along the alignment axis               |
+
+### TooltipTrigger
+
+Accepts all Base UI `Tooltip.Trigger` props. Use the `render` prop to supply a custom element as the trigger.

@@ -1,0 +1,272 @@
+---
+title: "Toast: Temporary Notifications with Stack and Swipe"
+sidebarTitle: "Toast"
+description: "Toast displays stackable temporary notifications using Base UI's Toast primitive. Supports 6 positions, promise integration, action buttons, and type-based variants."
+---
+
+Toast renders temporary notification messages that stack, animate, and can be swiped away by the user. It is built on Base UI's `Toast` primitive and is configured once at the application root via `ToastProvider`, after which any component in the tree can call `useToast()` to fire notifications. Toasts support five semantic types (`success`, `error`, `warning`, `info`, `loading`) each with a matching icon and border color, six screen positions, an auto-dismiss timeout, inline action buttons, and a `promise` helper that automatically transitions through loading → success or error states.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add toast
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install the packages manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/toast.tsx` from the repository into your project.
+  </Step>
+  <Step title="Add ToastProvider to your root layout">
+    Wrap your application in `ToastProvider` once — typically in `app/layout.tsx`.
+
+    ```tsx title="app/layout.tsx"
+    import { ToastProvider } from "@/components/ui/toast"
+
+    export default function RootLayout({ children }: { children: React.ReactNode }) {
+      return (
+        <html lang="en">
+          <body>
+            <ToastProvider>{children}</ToastProvider>
+          </body>
+        </html>
+      )
+    }
+    ```
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import { useToast } from "@/components/ui/toast"
+// For external (outside-React) usage:
+import { createToastManager, ToastProvider } from "@/components/ui/toast"
+```
+
+## Usage
+
+```tsx
+function SaveButton() {
+  const { add } = useToast()
+
+  return (
+    <Button
+      onClick={() =>
+        add({
+          title: "Saved",
+          description: "Your changes have been saved.",
+          type: "success",
+          timeout: 3000,
+        })
+      }
+    >
+      Save changes
+    </Button>
+  )
+}
+```
+
+<Note>
+  `useToast()` must be called inside a component that is a descendant of `ToastProvider`. Place `ToastProvider` at the root of your app in `layout.tsx` so it is always available.
+</Note>
+
+## Examples
+
+### Type variants
+
+Use the `type` property to render toasts with semantic icons and colored borders.
+
+```tsx
+export function ToastVariantsExample() {
+  const { add } = useToast()
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button
+        variant="outline"
+        onClick={() => add({ title: "Success!", description: "Operation completed.", type: "success", timeout: 4000 })}
+      >
+        Success
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => add({ title: "Error", description: "Something went wrong.", type: "error", timeout: 4000 })}
+      >
+        Error
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => add({ title: "Warning", description: "Please review this.", type: "warning", timeout: 4000 })}
+      >
+        Warning
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => add({ title: "Info", description: "Here's some context.", type: "info", timeout: 4000 })}
+      >
+        Info
+      </Button>
+    </div>
+  )
+}
+```
+
+### Promise toast
+
+Use `promise()` to automatically transition a toast through loading → success or error states as an async operation resolves.
+
+```tsx
+export function ToastPromiseExample() {
+  const { promise } = useToast()
+
+  async function handleUpload() {
+    await promise(
+      fetch("/api/upload", { method: "POST" }),
+      {
+        loading: { title: "Uploading…", type: "loading" },
+        success: { title: "Upload complete!", type: "success" },
+        error: { title: "Upload failed", description: "Please try again.", type: "error" },
+      }
+    )
+  }
+
+  return (
+    <Button onClick={handleUpload}>Upload file</Button>
+  )
+}
+```
+
+### Toast with action button (undo)
+
+Pass `actionProps` to render an inline action button inside the toast. A common pattern is an undo flow that closes the original toast and shows a confirmation.
+
+```tsx
+export function ToastUndoExample() {
+  const { add, close } = useToast()
+
+  function handleDelete() {
+    const id = add({
+      title: "Item deleted",
+      description: "The item has been removed.",
+      type: "info",
+      timeout: 6000,
+      actionProps: {
+        children: "Undo",
+        onClick: () => {
+          close(id)
+          add({ title: "Undo successful", type: "success", timeout: 3000 })
+        },
+      },
+    })
+  }
+
+  return (
+    <Button variant="destructive" onClick={handleDelete}>
+      Delete item
+    </Button>
+  )
+}
+```
+
+### External usage with createToastManager
+
+For triggering toasts from outside the React tree — such as an API utility or a service worker callback — create a manager externally and pass it to `ToastProvider`.
+
+```tsx title="lib/toast.ts"
+import { createToastManager } from "@/components/ui/toast"
+
+export const toastManager = createToastManager()
+```
+
+```tsx title="app/layout.tsx"
+import { ToastProvider } from "@/components/ui/toast"
+import { toastManager } from "@/lib/toast"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <ToastProvider toastManager={toastManager}>{children}</ToastProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+```ts title="lib/api.ts"
+import { toastManager } from "@/lib/toast"
+
+// Called from anywhere outside React:
+toastManager.add({ title: "Session expired", type: "warning" })
+```
+
+## API Reference
+
+### ToastProvider
+
+| Prop           | Type                                                                                                | Default          | Description                                                                                     |
+| -------------- | --------------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| `position`     | `"top-left" \| "top-center" \| "top-right" \| "bottom-left" \| "bottom-center" \| "bottom-right"` | `"bottom-right"` | Where toasts appear on screen                                                                   |
+| `limit`        | `number`                                                                                            | `5`              | Max visible toasts at once. Excess toasts queue and animate in when front ones are dismissed    |
+| `toastManager` | `ReturnType<typeof createToastManager>`                                                             | —                | Optional external manager from `createToastManager()` for triggering toasts outside React       |
+| `children`     | `React.ReactNode`                                                                                   | —                | Application content                                                                             |
+
+### useToast
+
+Returns the toast manager from the nearest `ToastProvider`. Must be called inside a descendant of `ToastProvider`.
+
+```tsx
+const { add, promise, close, toasts } = useToast()
+```
+
+### add(options)
+
+| Prop          | Type                                                         | Description                                                                    |
+| ------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `title`       | `string`                                                     | Toast heading text                                                             |
+| `description` | `string`                                                     | Supporting text shown below the title                                          |
+| `type`        | `"success" \| "error" \| "warning" \| "info" \| "loading"` | Icon and border color variant                                                  |
+| `timeout`     | `number`                                                     | Auto-dismiss timeout in milliseconds. Omit for a persistent toast              |
+| `actionProps` | `object`                                                     | Props forwarded to `<ToastAction>` (e.g. `{ children: "Undo", onClick: fn }`) |
+| `data`        | `object`                                                     | Arbitrary custom data attached to the toast object                             |
+
+### promise(promise, options)
+
+Wraps a `Promise` and transitions through `loading` → `success` or `error` states automatically.
+
+| Prop      | Type                                      | Description                                 |
+| --------- | ----------------------------------------- | ------------------------------------------- |
+| `loading` | `string \| { title, description, type }` | Content shown while the promise is pending  |
+| `success` | `string \| (data) => string \| object`    | Content shown when the promise resolves     |
+| `error`   | `string \| (err) => string \| object`     | Content shown when the promise rejects      |
+
+### createToastManager
+
+Creates a standalone toast manager that can be used outside the React component tree. Pass the returned instance to `ToastProvider` via the `toastManager` prop.
+
+### Primitive exports
+
+All primitive sub-components are exported for building custom toast layouts:
+
+| Export             | Description                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| `ToastRoot`        | Individual toast container. Handles position-aware animation classes and type-based border colors |
+| `ToastContent`     | Wraps toast body. Manages `data-behind` / `data-expanded` visibility transitions                  |
+| `ToastTitle`       | Renders the `title` field — reads from toast context automatically                                |
+| `ToastDescription` | Renders the `description` field — reads from toast context automatically                          |
+| `ToastAction`      | Action button with hover and focus ring styles                                                    |
+| `ToastClose`       | Absolute-positioned dismiss button, visible on hover or focus                                     |
+| `ToastViewport`    | Fixed viewport container. Position is driven by `ToastProvider` context                           |
+| `ToastList`        | Renders all active toasts from the nearest manager                                                |
+| `typeIcon`         | `Record<string, React.ReactNode>` — icon map for all five toast types                             |

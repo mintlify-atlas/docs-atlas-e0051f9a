@@ -1,0 +1,164 @@
+---
+title: "Get Started with Base UI in Your React Project"
+sidebarTitle: "Installation"
+description: "Install Base UI in Next.js, Vite, Remix, or any React 18+ project. The init command sets up Tailwind CSS, CSS variables, and utilities automatically."
+---
+
+Getting baseui-cn running in your project takes two commands: `init` to set up the configuration and dependencies, then `add` to pull in whichever components you need. The CLI handles detection, installation, and file generation — so you can go from a blank project to your first component in under a minute.
+
+<Steps>
+  <Step title="Run the init command">
+    Run `npx baseui-cn init` from the root of your project. The command detects your project structure, prompts for configuration, installs npm dependencies, creates a `lib/utils.ts` file with the `cn()` helper, injects CSS custom property variables into your global stylesheet, and writes a `baseui-cn.json` config file.
+
+    <CodeGroup>
+      ```bash npm
+      npx baseui-cn init
+      ```
+
+      ```bash yarn
+      yarn dlx baseui-cn init
+      ```
+
+      ```bash pnpm
+      pnpm dlx baseui-cn init
+      ```
+
+      ```bash bun
+      bunx baseui-cn init
+      ```
+    </CodeGroup>
+
+    During initialization you will be prompted for:
+
+    - **Component directory** — where component files should be placed (default: `components/ui` or `src/components/ui`)
+    - **Utils path** — where to write the `cn()` utility (default: `lib/utils` or `src/lib/utils`)
+    - **React Server Components** — whether your project uses RSC (auto-detected for Next.js App Router)
+    - **Global stylesheet** — which CSS file to update with theme variables (auto-detected)
+
+    Skip all prompts and use detected defaults with the `-y` flag:
+
+    ```bash
+    npx baseui-cn init -y
+    ```
+
+  </Step>
+
+  <Step title="Add components">
+    Add components one at a time, several at once, or all of them. Each component is copied into your configured `components/ui/` directory.
+
+    ```bash
+    # Add a single component
+    npx baseui-cn add button
+
+    # Add multiple components at once
+    npx baseui-cn add dialog drawer toast
+
+    # Add every component in the registry
+    npx baseui-cn add --all
+
+    # Launch the interactive picker
+    npx baseui-cn add
+    ```
+
+    The `add` command resolves component dependencies automatically. If a component you are installing requires another component, it will be fetched and installed alongside it. Any required npm packages are installed for you as well.
+
+  </Step>
+
+  <Step title="Import and use your components">
+    All components live under your configured `components/ui/` path. Import them using the `@/` alias (or your project's equivalent path alias):
+
+    ```tsx
+    import { Button } from "@/components/ui/button"
+    import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/ui/dialog"
+    import { Input } from "@/components/ui/input"
+
+    export default function Page() {
+      return (
+        <div>
+          <Button>Click me</Button>
+          <Dialog>
+            <DialogTrigger render={<Button variant="outline">Open dialog</Button>} />
+            <DialogContent>
+              <DialogTitle>Hello</DialogTitle>
+              <Input placeholder="Type something" />
+            </DialogContent>
+          </Dialog>
+        </div>
+      )
+    }
+    ```
+
+    <Note>
+      Base UI uses a **render prop** pattern on trigger and close sub-components, not the `asChild` pattern from Radix UI. Always use `render={<YourElement />}` instead of `asChild`.
+    </Note>
+
+  </Step>
+</Steps>
+
+## Manual dependency installation
+
+If you prefer not to use the CLI, or if automatic installation fails, install the required packages manually:
+
+```bash
+npm install @base-ui/react class-variance-authority clsx tailwind-merge
+```
+
+Then create `lib/utils.ts` (or `src/lib/utils.ts`) with the `cn()` helper:
+
+```ts
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+## The baseui-cn.json config file
+
+`init` creates a `baseui-cn.json` file at the root of your project. The `add` and `update` commands read this file to know where to place components and which stylesheet to update.
+
+```json
+{
+  "componentsPath": "src/components/ui",
+  "utilsPath": "src/lib/utils",
+  "globalCss": "src/app/globals.css",
+  "tailwind": true,
+  "rsc": true
+}
+```
+
+| Field | Description |
+|---|---|
+| `componentsPath` | Directory where component files are written |
+| `utilsPath` | Path to the `cn()` utils file (without `.ts` extension) |
+| `globalCss` | Global stylesheet to update with CSS variable tokens |
+| `tailwind` | Whether to configure Tailwind CSS integration |
+| `rsc` | Whether the project uses React Server Components |
+
+## The cn() utility
+
+The `init` command creates a `cn()` helper that combines `clsx` for conditional class composition with `tailwind-merge` to safely deduplicate conflicting Tailwind classes. All components in the registry use this utility internally.
+
+```ts
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+Use it in your own components anywhere you need to merge conditional classes:
+
+```tsx
+import { cn } from "@/lib/utils"
+
+function MyComponent({ className, isActive }: { className?: string; isActive?: boolean }) {
+  return (
+    <div className={cn("rounded-md border p-4", isActive && "border-primary bg-primary/10", className)}>
+      Content
+    </div>
+  )
+}
+```

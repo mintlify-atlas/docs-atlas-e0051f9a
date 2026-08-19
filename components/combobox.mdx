@@ -1,0 +1,273 @@
+---
+title: "Combobox: Searchable Selection with Multi-Select Support"
+sidebarTitle: "Combobox"
+description: "Combobox combines a search input with a filtered listbox. Supports single and multi-select with chips, async loading, and works inside any overlay without z-index issues."
+---
+
+`Combobox` combines a text input with a floating listbox so users can type to filter options and select with the keyboard or mouse. It supports single and multi-select (with dismissible chips), async result loading, grouped options, and a trigger-button pattern where the input lives inside the popup. Like `Select`, it works inside `Drawer` and `Dialog` overlays without extra `z-index` configuration.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add combobox
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+For a manual install, copy [`components/ui/combobox.tsx`](https://github.com/baseui-cn/baseui-cn) into your project and update the import paths.
+
+## Usage
+
+```tsx
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from "@/components/ui/combobox"
+```
+
+```tsx
+<Combobox>
+  <ComboboxInput placeholder="Select framework..." showTrigger />
+  <ComboboxContent>
+    <ComboboxList>
+      <ComboboxItem value="next">Next.js</ComboboxItem>
+      <ComboboxItem value="remix">Remix</ComboboxItem>
+      <ComboboxEmpty>No results.</ComboboxEmpty>
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+```
+
+## Examples
+
+### Basic with filter
+
+Use `useComboboxFilter` to run client-side filtering as the user types.
+
+```tsx
+"use client"
+
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+  useComboboxFilter,
+} from "@/components/ui/combobox"
+
+const frameworks = ["Next.js", "Remix", "Astro", "SvelteKit", "Nuxt"]
+
+export function ComboboxBasic() {
+  const { contains } = useComboboxFilter()
+
+  return (
+    <Combobox>
+      <ComboboxInput placeholder="Search frameworks..." showTrigger showClear />
+      <ComboboxContent>
+        <ComboboxList>
+          {frameworks
+            .filter((f) => contains(f, ""))
+            .map((f) => (
+              <ComboboxItem key={f} value={f}>
+                {f}
+              </ComboboxItem>
+            ))}
+          <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  )
+}
+```
+
+### Trigger-button pattern
+
+When you want a button to open the combobox popup and the search input lives inside the popup, use `ComboboxTrigger` with the `render` prop and set `autoFocus={false}` on `ComboboxInput` to avoid scroll-jank.
+
+```tsx
+"use client"
+
+import {
+  Combobox,
+  ComboboxTrigger,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+  useComboboxAnchor,
+} from "@/components/ui/combobox"
+import { Button } from "@/components/ui/button"
+
+const countries = ["Canada", "France", "Germany", "Japan", "United States"]
+
+export function ComboboxWithTrigger() {
+  const anchor = useComboboxAnchor()
+
+  return (
+    <div ref={anchor}>
+      <Combobox>
+        <ComboboxTrigger render={<Button variant="outline">Select country</Button>} />
+        <ComboboxContent anchor={anchor}>
+          <ComboboxInput placeholder="Search..." autoFocus={false} showTrigger={false} />
+          <ComboboxList>
+            {countries.map((c) => (
+              <ComboboxItem key={c} value={c}>
+                {c}
+              </ComboboxItem>
+            ))}
+            <ComboboxEmpty>No countries found.</ComboboxEmpty>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+    </div>
+  )
+}
+```
+
+### Multi-select with chips
+
+Enable `multiple` on `Combobox` and use `ComboboxChips` + `ComboboxChipsInput` to render selected items as dismissible chips inside the input area.
+
+```tsx
+"use client"
+
+import {
+  Combobox,
+  ComboboxChips,
+  ComboboxChip,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+  useComboboxAnchor,
+} from "@/components/ui/combobox"
+
+const tags = ["React", "TypeScript", "Tailwind CSS", "Vite", "Bun"]
+
+export function ComboboxMultiSelect() {
+  const anchor = useComboboxAnchor()
+
+  return (
+    <div ref={anchor}>
+      <Combobox multiple>
+        <ComboboxChips>
+          <ComboboxChip />
+          <ComboboxChipsInput placeholder="Add tags..." />
+        </ComboboxChips>
+        <ComboboxContent anchor={anchor}>
+          <ComboboxList>
+            {tags.map((t) => (
+              <ComboboxItem key={t} value={t} checkPosition="left">
+                {t}
+              </ComboboxItem>
+            ))}
+            <ComboboxEmpty>No tags found.</ComboboxEmpty>
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+    </div>
+  )
+}
+```
+
+<Note>
+  Pass `anchor={anchor}` to `ComboboxContent` when using chips or a custom trigger. This pins the popup width to the stable outer wrapper instead of the dynamic inner container.
+</Note>
+
+## API
+
+### Combobox
+
+Root component — a thin alias for `ComboboxPrimitive.Root`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `T[]` | — | Full list of items to render |
+| `multiple` | `boolean` | `false` | Enables multi-select mode |
+| `value` | `string \| string[]` | — | Controlled selected value(s) |
+| `defaultValue` | `string \| string[]` | — | Uncontrolled initial value |
+| `inputValue` | `string` | — | Controlled text in the search input |
+| `onValueChange` | `(value: string \| string[]) => void` | — | Fires when the selection changes |
+| `onInputValueChange` | `(value: string) => void` | — | Fires when the input text changes |
+| `disabled` | `boolean` | `false` | Disables the entire combobox |
+
+### ComboboxInput
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `showTrigger` | `boolean` | `true` | Show the chevron trigger button at the trailing edge |
+| `showClear` | `boolean` | `false` | Show an X clear button when the input has a value |
+| `autoFocus` | `boolean` | `true` | Focus the input when the popup opens. Set `false` when the input lives inside the popup to prevent scroll-jank |
+| `startAddon` | `React.ReactNode` | — | Content rendered at the leading edge (e.g. `<SearchIcon />`) |
+| `disabled` | `boolean` | `false` | Disables the input and its buttons |
+
+### ComboboxTrigger
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `showIcon` | `boolean` | `true` | Render the built-in chevron icon |
+| `icon` | `React.ReactNode` | `<ChevronDownIcon />` | Custom icon to render when `showIcon` is true |
+| `render` | `React.ReactElement` | — | Custom element to render as the trigger (Base UI `render` prop pattern) |
+
+### ComboboxItem
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | — | The item value |
+| `disabled` | `boolean` | `false` | Prevents selection |
+| `checkPosition` | `"right" \| "left"` | `"right"` | Position of the selected-state checkmark indicator |
+
+### ComboboxContent
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Which side of the anchor the popup opens toward |
+| `sideOffset` | `number` | `6` | Gap in px between anchor and popup |
+| `align` | `"start" \| "center" \| "end"` | `"start"` | Alignment relative to the anchor |
+| `alignOffset` | `number` | `0` | Offset in px along the alignment axis |
+| `anchor` | `React.RefObject<HTMLDivElement>` | — | Explicit anchor ref for pinning popup width (required for chips and trigger patterns) |
+
+### ComboboxChips
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `startAddon` | `React.ReactNode` | — | Icon or content at the leading edge of the chips container |
+
+### ComboboxChip
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `removeProps` | `ComboboxChipRemove.Props` | — | Props forwarded to the inner remove button |
+
+### useComboboxAnchor
+
+Returns a `RefObject<HTMLDivElement>` to pass as `anchor` to `ComboboxContent`. Use this when the combobox has a chips input or a custom trigger button so the popup width is pinned to a stable outer wrapper.
+
+```tsx
+const anchor = useComboboxAnchor()
+
+<div ref={anchor}>
+  <Combobox multiple>
+    {/* ... */}
+    <ComboboxContent anchor={anchor}>...</ComboboxContent>
+  </Combobox>
+</div>
+```
+
+### useComboboxFilter
+
+Re-export of `ComboboxPrimitive.useFilter`. Returns a `contains` function for client-side option filtering.

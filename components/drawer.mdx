@@ -1,0 +1,216 @@
+---
+title: "Drawer: Slide-in Panel from Any Viewport Edge"
+sidebarTitle: "Drawer"
+description: "Drawer slides a panel in from any edge of the viewport. Built on Base UI — Select, Combobox, and Toast all work inside it without z-index or focus conflicts."
+---
+
+Drawer renders a panel that slides into view from any edge of the viewport — right, left, bottom, or top. It is built on Base UI's stable `Drawer` primitive (v1.3.0) which means every other Base UI overlay — Select, Combobox, Tooltip, Toast — works correctly inside it out of the box. Because all overlays share the same portal system, there are no z-index races, no focus-lock conflicts, and no "closing the wrong thing" bugs. The bottom variant automatically renders a drag handle and limits its height to 80 % of the viewport, making it ideal as a mobile bottom sheet.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add drawer
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+  <Step title="Install dependencies">
+    Run either the CLI command above or install `@base-ui/react` manually.
+  </Step>
+  <Step title="Copy the component">
+    Copy `components/ui/drawer.tsx` from the repository into your project.
+  </Step>
+  <Step title="Update import paths">
+    Adjust the `@/` alias to match your project's path configuration.
+  </Step>
+</Steps>
+
+## Import
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer"
+```
+
+## Usage
+
+```tsx
+<Drawer>
+  <DrawerTrigger render={<Button variant="outline">Open drawer</Button>} />
+  <DrawerContent side="right">
+    <DrawerHeader>
+      <DrawerTitle>Settings</DrawerTitle>
+      <DrawerDescription>Manage your preferences.</DrawerDescription>
+    </DrawerHeader>
+    <div className="flex-1 p-6">Content goes here.</div>
+    <DrawerFooter>
+      <DrawerClose render={<Button variant="outline">Close</Button>} />
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+<Note>
+  Base UI uses a `render` prop instead of `asChild`. Pass your custom element to `DrawerTrigger` and `DrawerClose` via `render={<Button />}`.
+</Note>
+
+## Examples
+
+### Right drawer (default)
+
+The default `side="right"` drawer slides in from the right and is 75 % of the viewport width, capped at `max-w-sm`.
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+
+export function RightDrawerExample() {
+  return (
+    <Drawer>
+      <DrawerTrigger render={<Button variant="outline">Open right drawer</Button>} />
+      <DrawerContent side="right">
+        <DrawerHeader>
+          <DrawerTitle>Notifications</DrawerTitle>
+          <DrawerDescription>Your recent activity.</DrawerDescription>
+        </DrawerHeader>
+        <div className="flex-1 overflow-y-auto p-6">
+          <p className="text-sm text-muted-foreground">No new notifications.</p>
+        </div>
+        <DrawerFooter>
+          <DrawerClose render={<Button variant="outline" className="w-full">Close</Button>} />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+```
+
+### Bottom sheet
+
+Use `side="bottom"` for a mobile-friendly bottom sheet. It automatically gains a drag handle and a max-height of 80 vh.
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+
+export function BottomSheetExample() {
+  return (
+    <Drawer>
+      <DrawerTrigger render={<Button variant="outline">Open bottom sheet</Button>} />
+      <DrawerContent side="bottom">
+        <DrawerHeader>
+          <DrawerTitle>Share link</DrawerTitle>
+          <DrawerDescription>Choose how to share this item.</DrawerDescription>
+        </DrawerHeader>
+        <div className="p-6 space-y-3">
+          <Button className="w-full" variant="outline">Copy link</Button>
+          <Button className="w-full" variant="outline">Send via email</Button>
+        </div>
+        <DrawerFooter>
+          <DrawerClose render={<Button variant="ghost" className="w-full">Cancel</Button>} />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+```
+
+### Drawer with toast
+
+Perform an action inside the drawer and fire a toast notification. Because Base UI's portal system is shared, dismissing the toast does **not** close the drawer.
+
+```tsx
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/toast"
+
+export function DrawerWithToastExample() {
+  const { add } = useToast()
+
+  return (
+    <Drawer>
+      <DrawerTrigger render={<Button variant="outline">Open drawer</Button>} />
+      <DrawerContent side="right">
+        <DrawerHeader>
+          <DrawerTitle>Quick actions</DrawerTitle>
+          <DrawerDescription>Perform an action and see the result.</DrawerDescription>
+        </DrawerHeader>
+        <div className="flex-1 p-6">
+          <Button
+            onClick={() =>
+              add({ title: "Done!", description: "Action completed.", type: "success", timeout: 3000 })
+            }
+          >
+            Run action
+          </Button>
+        </div>
+        <DrawerFooter>
+          <DrawerClose render={<Button variant="outline" className="w-full">Close</Button>} />
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+```
+
+<Tip>
+  All Base UI overlay components — Select, Combobox, Tooltip, Toast — share the same portal system as Drawer. You never need to worry about z-index stacking or focus-lock conflicts when composing them together.
+</Tip>
+
+## API Reference
+
+### DrawerContent
+
+| Prop   | Type                                       | Default   | Description                                       |
+| ------ | ------------------------------------------ | --------- | ------------------------------------------------- |
+| `side` | `"top" \| "bottom" \| "left" \| "right"` | `"right"` | Edge of the viewport the drawer slides in from    |
+
+### DrawerTrigger
+
+Accepts all Base UI `Drawer.Trigger` props. Use the `render` prop to supply a custom trigger element.
+
+### DrawerClose
+
+Accepts all Base UI `Drawer.Close` props. Use the `render` prop to supply a custom close element anywhere inside the drawer.

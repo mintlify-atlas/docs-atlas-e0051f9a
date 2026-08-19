@@ -1,0 +1,144 @@
+---
+title: "baseui-cn init — Initialize a New Project"
+sidebarTitle: "init"
+description: "The init command bootstraps Base UI in your project: installs dependencies, sets up Tailwind, injects CSS variables, and writes the utils file and config."
+---
+
+The `init` command is the first thing you run when adding baseui-cn to a project. It detects your project structure, asks a few configuration questions, and then performs all the setup work automatically — so you are ready to `add` components immediately afterwards.
+
+## Usage
+
+```bash
+npx baseui-cn init [options]
+```
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `-y, --yes` | `false` | Skip all confirmation prompts and use detected defaults |
+| `-d, --defaults` | `false` | Use default configuration values without prompting |
+| `--css <path>` | auto-detected | Path to the stylesheet file to update with theme variables |
+| `--skip-tailwind` | `false` | Skip Tailwind CSS configuration |
+
+## What init does
+
+`init` runs through a fixed sequence of steps each time it executes.
+
+<Steps>
+  <Step title="Detect project structure">
+    The command checks for the presence of `next.config.js`, `next.config.ts`, or `next.config.mjs` to determine whether the project is Next.js or a plain React setup. It also checks for a `src/` directory and an `app/` directory to set sensible default paths and detect App Router usage.
+
+    ```
+    ✔ Next.js project detected · src/ dir · App Router
+    ```
+  </Step>
+
+  <Step title="Prompt for configuration">
+    Unless `--yes` or `--defaults` is passed, you are asked to confirm or override the detected paths:
+
+    - **Where should components be added?** — defaults to `src/components/ui` (or `components/ui` without `src/`)
+    - **Where is your utils file?** — defaults to `src/lib/utils` (or `lib/utils`)
+    - **Are you using React Server Components?** — defaults to `true` for Next.js App Router
+    - **Which stylesheet should baseui-cn update?** — auto-detected from common locations
+
+    Pass `--css <path>` to set the stylesheet path non-interactively:
+
+    ```bash
+    npx baseui-cn init --css src/styles/globals.css
+    ```
+  </Step>
+
+  <Step title="Install npm dependencies">
+    The CLI detects your package manager (`npm`, `yarn`, `pnpm`, or `bun`) and installs the four required packages:
+
+    ```bash
+    npm install @base-ui/react class-variance-authority clsx tailwind-merge
+    ```
+
+    If installation fails, the command prints the manual install command so you can run it yourself.
+  </Step>
+
+  <Step title="Create the utils file">
+    If a utils file does not already exist at the configured path, `init` creates it with the `cn()` helper:
+
+    ```ts
+    import { clsx, type ClassValue } from "clsx"
+    import { twMerge } from "tailwind-merge"
+
+    export function cn(...inputs: ClassValue[]) {
+      return twMerge(clsx(inputs))
+    }
+    ```
+
+    If the file already exists, this step is skipped.
+  </Step>
+
+  <Step title="Inject CSS variables">
+    The command adds a full set of CSS custom property tokens to your global stylesheet, including both the `:root` light-mode values and a `.dark` block. Tailwind's `@theme` mapping is also written so that utility classes like `bg-primary` and `text-muted-foreground` resolve immediately.
+  </Step>
+
+  <Step title="Write baseui-cn.json">
+    A `baseui-cn.json` config file is written to the project root. The `add` and `update` commands read this file on every run.
+
+    ```json
+    {
+      "componentsPath": "src/components/ui",
+      "utilsPath": "src/lib/utils",
+      "globalCss": "src/app/globals.css",
+      "tailwind": true,
+      "rsc": true
+    }
+    ```
+  </Step>
+</Steps>
+
+## The generated baseui-cn.json
+
+| Field | Description |
+|---|---|
+| `componentsPath` | Directory where component files are written by `add` and `update` |
+| `utilsPath` | Path to the `cn()` utils file (without `.ts` extension) |
+| `globalCss` | Global stylesheet updated with CSS variable tokens |
+| `tailwind` | Whether Tailwind CSS is configured for this project |
+| `rsc` | Whether the project uses React Server Components |
+
+You can edit `baseui-cn.json` by hand at any time. The next `add` or `update` run will use the updated values.
+
+## Re-initializing
+
+If `baseui-cn.json` already exists and you run `init` again without `--yes`, you will be asked to confirm before overwriting the configuration:
+
+```
+? baseui-cn is already initialized. Reinitialize? › No / Yes
+```
+
+## Terminal output example
+
+```
+baseui-cn  Base UI components. One command install.
+
+✔ Next.js project detected · src/ dir · App Router
+✔ Dependencies installed
+✔ Utils created at src/lib/utils.ts
+✔ CSS variables injected into src/app/globals.css
+
+✓ baseui-cn initialized successfully.
+
+  Next steps:
+  npx baseui-cn add button          Add a component
+  npx baseui-cn add --all           Add everything
+  npx baseui-cn list                See all components
+
+  Docs: https://baseui-cn.com
+```
+
+## Skip all prompts
+
+Use `-y` to run `init` without any interaction, accepting all detected defaults:
+
+```bash
+npx baseui-cn init -y
+```
+
+This is useful in CI pipelines or automated project scaffolding scripts.

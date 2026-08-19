@@ -1,0 +1,192 @@
+---
+title: "Collapsible: Expandable Content Panel"
+sidebarTitle: "Collapsible"
+description: "Collapsible renders a container with a trigger that shows or hides its content. Built on Base UI's Collapsible primitive with animated open and close transitions."
+---
+
+Collapsible is a single, independent expand/collapse container. A `CollapsibleTrigger` button toggles the visibility of `CollapsibleContent`, which animates its height smoothly via a CSS custom property (`--collapsible-panel-height`). Unlike Accordion, Collapsible manages only one panel in isolation — it does not participate in a group and has no concept of sibling state.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add collapsible
+```
+
+```bash Manual
+npm install @base-ui/react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install the dependency">
+  Run the manual install command above to add `@base-ui/react` to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/collapsible.tsx` into your project and adjust the import alias if needed.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and that Tailwind CSS v4 is configured.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible"
+```
+
+```tsx
+<Collapsible>
+  <CollapsibleTrigger>Toggle details</CollapsibleTrigger>
+  <CollapsibleContent>
+    Hidden content shown when open.
+  </CollapsibleContent>
+</Collapsible>
+```
+
+<Note>
+  `CollapsibleContent` is an alias for `CollapsiblePanel` exported from the component file. Both names refer to the same underlying component.
+</Note>
+
+## Props / API
+
+### Collapsible
+
+`Collapsible` forwards all props to `CollapsiblePrimitive.Root` from `@base-ui/react/collapsible`.
+
+| Prop             | Type                         | Default | Description                                                              |
+| ---------------- | ---------------------------- | ------- | ------------------------------------------------------------------------ |
+| `defaultOpen`    | `boolean`                    | `false` | Whether the panel is open on initial render (uncontrolled).              |
+| `open`           | `boolean`                    | —       | Controlled open state.                                                   |
+| `onOpenChange`   | `(open: boolean) => void`    | —       | Callback fired when the open state changes.                              |
+| `disabled`       | `boolean`                    | `false` | Prevents the trigger from toggling the panel.                            |
+| `className`      | `string`                     | —       | Extra classes applied to the root element.                               |
+
+### CollapsibleTrigger
+
+| Prop        | Type        | Default | Description                                           |
+| ----------- | ----------- | ------- | ----------------------------------------------------- |
+| `children`  | `ReactNode` | —       | Content rendered inside the trigger button.           |
+| `className` | `string`    | —       | Extra classes applied to the trigger element.         |
+
+### CollapsibleContent
+
+Alias: `CollapsiblePanel`.
+
+| Prop        | Type        | Default | Description                                               |
+| ----------- | ----------- | ------- | --------------------------------------------------------- |
+| `children`  | `ReactNode` | —       | Content displayed when the collapsible is open.           |
+| `className` | `string`    | —       | Extra classes applied to the panel element.               |
+
+## Examples
+
+### Open by default
+
+Use `defaultOpen` to render the panel expanded on first mount, without needing to manage state externally.
+
+```tsx
+<Collapsible defaultOpen>
+  <CollapsibleTrigger>Hide advanced settings</CollapsibleTrigger>
+  <CollapsibleContent>
+    <div className="mt-2 space-y-2">
+      <p>Debug mode: off</p>
+      <p>Cache TTL: 300s</p>
+    </div>
+  </CollapsibleContent>
+</Collapsible>
+```
+
+### Controlled open state
+
+Manage the open/closed state externally — useful for driving the collapsible from a parent component, a URL hash, or a keyboard shortcut.
+
+```tsx
+import { useState } from "react"
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible"
+
+export function ControlledCollapsible() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-sm">Filters</span>
+        <CollapsibleTrigger
+          onClick={() => setOpen((prev) => !prev)}
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          {open ? "Hide" : "Show"} filters
+        </CollapsibleTrigger>
+      </div>
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CollapsibleContent>
+          <div className="border rounded-md p-4 space-y-2 text-sm">
+            <p>Status: Active</p>
+            <p>Date range: Last 30 days</p>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
+  )
+}
+```
+
+### With a styled trigger button
+
+Pair `CollapsibleTrigger` with your `Button` component and a rotating icon to create a polished settings-style toggle.
+
+```tsx
+import { ChevronDown } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible"
+
+export function StyledCollapsible() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="w-80">
+      <div className="flex items-center justify-between rounded-lg border px-4 py-2">
+        <span className="font-medium text-sm">Team members</span>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <ChevronDown
+              className={`size-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            />
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent>
+        <ul className="mt-2 space-y-1 text-sm">
+          <li className="rounded-md border px-4 py-2">@alice</li>
+          <li className="rounded-md border px-4 py-2">@bob</li>
+          <li className="rounded-md border px-4 py-2">@carol</li>
+        </ul>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+```
+
+<Tip>
+  Use `Accordion` when you need to manage a group of collapsible sections with shared open/close state. Use `Collapsible` for a single standalone expandable panel.
+</Tip>

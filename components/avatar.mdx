@@ -1,0 +1,181 @@
+---
+title: "Avatar Component: User Images with Fallback"
+sidebarTitle: "Avatar"
+description: "Avatar displays a profile image with an automatic fallback to initials or an icon when the image fails to load. Built on Base UI's image primitive."
+---
+
+Avatar renders a circular user image with a graceful fallback to initials or any React node when the image URL is unavailable or still loading. The component is built directly on `@base-ui/react/avatar` primitives and extends them with four size variants, presence badge support, and a group layout component for stacking multiple avatars with overflow counts.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add avatar
+```
+
+```bash Manual
+npm install @base-ui/react
+# Then copy the component source into components/ui/avatar.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarImage,
+} from "@/components/ui/avatar"
+```
+
+```tsx
+<Avatar size="md">
+  <AvatarImage src="/photo.jpg" alt="Aria Chen" />
+  <AvatarFallback>AC</AvatarFallback>
+</Avatar>
+```
+
+## Examples
+
+### Basic with Fallback
+
+When no image is available the `AvatarFallback` renders automatically. Pass initials or any icon.
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
+export function AvatarBasic() {
+  return (
+    <Avatar>
+      <AvatarImage src="https://example.com/photo.jpg" alt="Jane Doe" />
+      <AvatarFallback>JD</AvatarFallback>
+    </Avatar>
+  )
+}
+```
+
+### Sizes
+
+Four sizes — `xs`, `sm`, `md`, and `lg` — keep avatars aligned with nearby controls and cards.
+
+```tsx
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+
+export function AvatarSizes() {
+  return (
+    <div className="flex items-center gap-3">
+      <Avatar size="xs"><AvatarFallback>XS</AvatarFallback></Avatar>
+      <Avatar size="sm"><AvatarFallback>SM</AvatarFallback></Avatar>
+      <Avatar size="md"><AvatarFallback>MD</AvatarFallback></Avatar>
+      <Avatar size="lg"><AvatarFallback>LG</AvatarFallback></Avatar>
+    </div>
+  )
+}
+```
+
+### With Presence Badge
+
+Use `showBadge` to display an inline status indicator. The `badgeVariant` controls the color token and `badgePosition` sets the corner.
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
+export function AvatarWithBadge() {
+  return (
+    <div className="flex gap-4">
+      <Avatar showBadge badgeVariant="online">
+        <AvatarFallback>AC</AvatarFallback>
+      </Avatar>
+      <Avatar showBadge badgeVariant="away" badgePosition="bottom-right">
+        <AvatarFallback>BK</AvatarFallback>
+      </Avatar>
+      <Avatar showBadge badgeVariant="busy">
+        <AvatarFallback>CL</AvatarFallback>
+      </Avatar>
+      <Avatar showBadge badgeVariant="offline">
+        <AvatarFallback>DM</AvatarFallback>
+      </Avatar>
+    </div>
+  )
+}
+```
+
+### Group with Overflow Count
+
+Stack avatars with `AvatarGroup` and show how many are hidden with `AvatarGroupCount`.
+
+```tsx
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  AvatarGroup,
+  AvatarGroupCount,
+} from "@/components/ui/avatar"
+
+export function AvatarGroupExample() {
+  return (
+    <AvatarGroup>
+      <Avatar size="sm">
+        <AvatarImage src="https://example.com/user1.jpg" alt="Alice" />
+        <AvatarFallback>AL</AvatarFallback>
+      </Avatar>
+      <Avatar size="sm">
+        <AvatarImage src="https://example.com/user2.jpg" alt="Bob" />
+        <AvatarFallback>BO</AvatarFallback>
+      </Avatar>
+      <Avatar size="sm">
+        <AvatarFallback>CE</AvatarFallback>
+      </Avatar>
+      <AvatarGroupCount size="sm">+4</AvatarGroupCount>
+    </AvatarGroup>
+  )
+}
+```
+
+<Note>
+  `AvatarGroup` applies negative spacing and a `ring-2 ring-background` on each child avatar automatically — no extra classes needed.
+</Note>
+
+## Props
+
+### Avatar
+
+| Prop            | Type                                                            | Default        | Description                                                          |
+| --------------- | --------------------------------------------------------------- | -------------- | -------------------------------------------------------------------- |
+| `size`          | `"xs" \| "sm" \| "md" \| "lg"`                                  | `"md"`         | Diameter of the avatar circle and font size of the fallback initials |
+| `showBadge`     | `boolean`                                                       | `false`        | Render a presence/status badge overlay on the avatar                 |
+| `badgeVariant`  | `"online" \| "offline" \| "busy" \| "away"`                     | `"online"`     | Color of the presence badge (requires `showBadge`)                   |
+| `badgePosition` | `"top-right" \| "top-left" \| "bottom-right" \| "bottom-left"`  | `"top-right"`  | Corner placement of the badge                                        |
+
+### AvatarImage
+
+Accepts all props from `AvatarPrimitive.Image`. The `src` and `alt` props are most commonly used.
+
+| Prop  | Type     | Default | Description                           |
+| ----- | -------- | ------- | ------------------------------------- |
+| `src` | `string` | —       | URL of the image to display           |
+| `alt` | `string` | —       | Accessible alt text for the image     |
+
+### AvatarFallback
+
+Accepts all props from `AvatarPrimitive.Fallback`. Renders when the image is absent or fails.
+
+### AvatarBadge
+
+Use `AvatarBadge` directly for fine-grained badge control independent of the `Avatar` wrapper.
+
+| Prop            | Type                                                            | Default       | Description           |
+| --------------- | --------------------------------------------------------------- | ------------- | --------------------- |
+| `variant`       | `"online" \| "offline" \| "busy" \| "away"`                     | `"online"`    | Presence status color |
+| `badgePosition` | `"top-right" \| "top-left" \| "bottom-right" \| "bottom-left"`  | `"top-right"` | Corner placement      |
+
+### AvatarGroupCount
+
+| Prop   | Type                           | Default | Description                                    |
+| ------ | ------------------------------ | ------- | ---------------------------------------------- |
+| `size` | `"xs" \| "sm" \| "md" \| "lg"` | `"md"`  | Diameter to match the rest of the avatar group |

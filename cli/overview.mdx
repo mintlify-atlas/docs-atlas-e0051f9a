@@ -1,0 +1,67 @@
+---
+title: "baseui-cn CLI: Install Components from the Command Line"
+sidebarTitle: "Overview"
+description: "The baseui-cn CLI adds components to your project with one command. Covers init, add, update, and list subcommands with all flags and real usage examples."
+---
+
+The `baseui-cn` CLI is the primary way to add Base UI components to your project. It handles project detection, dependency installation, CSS variable injection, and file generation — all from the terminal. You never need to visit a documentation site and manually copy component code.
+
+The CLI is published as the [`baseui-cn`](https://www.npmjs.com/package/baseui-cn) npm package (version `1.3.3`). You can run it with `npx` without installing, or install it globally if you prefer.
+
+```bash
+# Run without installing (recommended)
+npx baseui-cn <command>
+
+# Or install globally
+npm install -g baseui-cn
+baseui-cn <command>
+```
+
+## Commands
+
+| Command | Description |
+|---|---|
+| [`init`](/cli/init) | Set up baseui-cn in a project: install dependencies, configure Tailwind, create utils, inject CSS variables |
+| [`add`](/cli/add) | Copy one or more components into your project, resolve sub-dependencies, and install npm packages |
+| [`update`](/cli/update) | Replace installed components with the latest registry versions |
+| [`list`](/cli/list) | Print all components available in the registry |
+
+## Global flags
+
+```bash
+# Print the version number
+npx baseui-cn --version
+
+# Print help for any command
+npx baseui-cn --help
+npx baseui-cn init --help
+npx baseui-cn add --help
+```
+
+## Auto-detection
+
+The CLI inspects your project before prompting for anything. It detects:
+
+- **Framework** — whether `next.config.js` / `.ts` / `.mjs` is present (Next.js vs plain React)
+- **Source directory** — whether a `src/` directory exists, adjusting default paths accordingly
+- **App Router** — whether an `app/` directory is present (for RSC default)
+- **Package manager** — `npm`, `yarn`, `pnpm`, or `bun`, used when installing dependencies
+
+You can always override detected values during the interactive prompts, or skip them entirely with `--yes`.
+
+## Command pages
+
+<CardGroup cols={2}>
+  <Card title="init" icon="gear" href="/cli/init">
+    Initialize baseui-cn: installs deps, creates `lib/utils.ts`, injects CSS variables, writes `baseui-cn.json`.
+  </Card>
+  <Card title="add" icon="plus" href="/cli/add">
+    Add components to your project with automatic dependency resolution and npm package installation.
+  </Card>
+  <Card title="update" icon="arrows-rotate" href="/cli/update">
+    Refresh installed components to their latest registry versions, always overwriting existing files.
+  </Card>
+  <Card title="list" icon="list" href="/cli/list">
+    Browse all components available in the registry, with descriptions, tags, and optional JSON output.
+  </Card>
+</CardGroup>

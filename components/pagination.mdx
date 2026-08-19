@@ -1,0 +1,246 @@
+---
+title: "Pagination: Page Navigation Controls for Lists"
+sidebarTitle: "Pagination"
+description: "Pagination renders previous/next controls and numbered page buttons for navigating multi-page lists and data tables. Supports controlled and uncontrolled modes."
+---
+
+Pagination provides the navigation chrome for multi-page data sets: previous/next arrow buttons, numbered page links, and an ellipsis for collapsed ranges. Each control is built from composable sub-components so you can assemble exactly the layout you need. The active page link is marked with `aria-current="page"` and the `<nav>` wrapper carries `aria-label="pagination"` for landmark discovery by screen readers.
+
+## Installation
+
+<CodeGroup>
+
+```bash CLI
+npx baseui-cn add pagination
+```
+
+```bash Manual
+npm install @base-ui/react lucide-react
+```
+
+</CodeGroup>
+
+<Steps>
+
+<Step title="Install dependencies">
+  Run the manual install command above to add `@base-ui/react` and `lucide-react` to your project.
+</Step>
+
+<Step title="Copy the component">
+  Copy `components/ui/pagination.tsx` into your project. This component also depends on `components/ui/button.tsx` for the `buttonVariants` helper — ensure that file is present.
+</Step>
+
+<Step title="Verify imports">
+  Ensure `@/lib/utils` resolves to your `cn` helper and `@/components/ui/button` exports `buttonVariants`.
+</Step>
+
+</Steps>
+
+## Usage
+
+```tsx
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination"
+```
+
+```tsx
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="#" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#" isActive>1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">2</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">3</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="#" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+## Props / API
+
+### Pagination
+
+Renders a `<nav aria-label="pagination">` centred within its container.
+
+| Prop        | Type     | Default | Description                                     |
+| ----------- | -------- | ------- | ----------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the `<nav>` element.   |
+
+### PaginationContent
+
+Renders a `<ul>` with horizontal flex layout and gap spacing.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the list element.           |
+
+### PaginationItem
+
+Renders a plain `<li>` wrapper.
+
+| Prop        | Type     | Default | Description                                          |
+| ----------- | -------- | ------- | ---------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the list item.              |
+
+### PaginationLink
+
+Renders an `<a>` styled as a button using `buttonVariants`. Accepts a `render` prop for router integration.
+
+| Prop       | Type                 | Default  | Description                                                                  |
+| ---------- | -------------------- | -------- | ---------------------------------------------------------------------------- |
+| `isActive` | `boolean`            | —        | Marks the link as the current page; applies outline variant and `aria-current="page"`. |
+| `size`     | `ButtonSize`         | `"icon"` | Size forwarded to the `buttonVariants` helper.                               |
+| `render`   | `React.ReactElement` | —        | Custom render element — use to swap the `<a>` for a router `<Link>`.        |
+| `href`     | `string`             | —        | URL the pagination link points to.                                           |
+| `className`| `string`             | —        | Extra classes applied to the link element.                                   |
+
+### PaginationPrevious
+
+Pre-built previous-page control with a `ChevronLeft` icon and a "Previous" label (hidden on small screens).
+
+| Prop        | Type     | Default | Description                                         |
+| ----------- | -------- | ------- | --------------------------------------------------- |
+| `href`      | `string` | —       | URL of the previous page.                           |
+| `className` | `string` | —       | Extra classes merged into the link.                 |
+
+### PaginationNext
+
+Pre-built next-page control with a "Next" label (hidden on small screens) and a `ChevronRight` icon.
+
+| Prop        | Type     | Default | Description                                         |
+| ----------- | -------- | ------- | --------------------------------------------------- |
+| `href`      | `string` | —       | URL of the next page.                               |
+| `className` | `string` | —       | Extra classes merged into the link.                 |
+
+### PaginationEllipsis
+
+Renders a `<span aria-hidden>` containing a `MoreHorizontal` icon, with a visually-hidden "More pages" label.
+
+| Prop        | Type     | Default | Description                                        |
+| ----------- | -------- | ------- | -------------------------------------------------- |
+| `className` | `string` | —       | Extra classes applied to the ellipsis span.        |
+
+## Examples
+
+### With ellipsis for large page counts
+
+Collapse the middle of a long page range with `PaginationEllipsis`, keeping the first and last pages always visible.
+
+```tsx
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="/posts?page=4" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/posts?page=1">1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/posts?page=4">4</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/posts?page=5" isActive>5</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/posts?page=6">6</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/posts?page=20">20</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="/posts?page=6" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+### Controlled with state
+
+Drive the active page from React state — useful for client-side data fetching where you intercept the link click.
+
+```tsx
+import { useState } from "react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination"
+
+export function ControlledPagination({ totalPages = 5 }) {
+  const [page, setPage] = useState(1)
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href="#"
+            onClick={(e) => { e.preventDefault(); setPage((p) => Math.max(1, p - 1)) }}
+          />
+        </PaginationItem>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+          <PaginationItem key={n}>
+            <PaginationLink
+              href="#"
+              isActive={n === page}
+              onClick={(e) => { e.preventDefault(); setPage(n) }}
+            >
+              {n}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem>
+          <PaginationNext
+            href="#"
+            onClick={(e) => { e.preventDefault(); setPage((p) => Math.min(totalPages, p + 1)) }}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+```
+
+### With a Next.js router Link
+
+Use the `render` prop on `PaginationLink` (and pass through `PaginationPrevious`/`PaginationNext`) to integrate with Next.js client-side routing.
+
+```tsx
+import Link from "next/link"
+
+<PaginationLink isActive render={<Link href="/items?page=3" />}>
+  3
+</PaginationLink>
+```
+
+<Note>
+  `PaginationPrevious` and `PaginationNext` internally render a `PaginationLink`, so they also accept the `render` prop for router integration.
+</Note>

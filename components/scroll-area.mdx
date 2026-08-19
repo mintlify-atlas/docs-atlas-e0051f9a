@@ -1,0 +1,138 @@
+---
+title: "ScrollArea: Custom Scrollbars for Overflow Content"
+sidebarTitle: "ScrollArea"
+description: "ScrollArea wraps overflow content with styled, accessible custom scrollbars built on Base UI's ScrollArea primitive. Supports vertical and horizontal scroll."
+---
+
+ScrollArea replaces the browser's native scrollbars with styled, theme-aware alternatives while keeping all native scroll behaviour — momentum scrolling, keyboard navigation, and accessibility — intact. It is built on `@base-ui/react/scroll-area` and adds two convenience props: `scrollFade` for CSS mask fade edges that hint at overflow content, and `scrollbarGutter` to prevent layout shift when the scrollbar becomes visible.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add scroll-area
+```
+
+```bash Manual
+npm install @base-ui/react
+# Then copy the component source into components/ui/scroll-area.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import { ScrollArea } from "@/components/ui/scroll-area"
+```
+
+```tsx
+<ScrollArea className="h-48">
+  <p>Your scrollable content goes here.</p>
+</ScrollArea>
+```
+
+## Examples
+
+### Vertical Scroll
+
+Constrain a container's height and let `ScrollArea` manage the vertical overflow with custom scrollbars.
+
+```tsx
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+const items = Array.from({ length: 20 }, (_, i) => `Item ${i + 1}`)
+
+export function ScrollAreaVertical() {
+  return (
+    <ScrollArea className="h-48 w-64 rounded-md border p-3">
+      <ul className="space-y-1 text-sm">
+        {items.map((item) => (
+          <li key={item} className="py-1 text-muted-foreground">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </ScrollArea>
+  )
+}
+```
+
+### With Scroll Fade
+
+The `scrollFade` prop applies a CSS mask at the edges of the viewport to hint that more content is available.
+
+```tsx
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+export function ScrollAreaWithFade() {
+  return (
+    <ScrollArea scrollFade className="h-48 w-64 rounded-md border p-3">
+      <div className="space-y-2 text-sm text-muted-foreground">
+        {Array.from({ length: 15 }, (_, i) => (
+          <p key={i}>Paragraph {i + 1} — fade masks appear at the edges.</p>
+        ))}
+      </div>
+    </ScrollArea>
+  )
+}
+```
+
+### Horizontal Scroll
+
+Use a wide inner container to trigger horizontal scrolling.
+
+```tsx
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+export function ScrollAreaHorizontal() {
+  return (
+    <ScrollArea className="w-72 rounded-md border">
+      <div className="flex gap-3 p-3">
+        {Array.from({ length: 12 }, (_, i) => (
+          <div
+            key={i}
+            className="w-28 shrink-0 rounded-md bg-muted p-3 text-center text-sm"
+          >
+            Card {i + 1}
+          </div>
+        ))}
+      </div>
+    </ScrollArea>
+  )
+}
+```
+
+### Preventing Layout Shift
+
+Enable `scrollbarGutter` when the scrollable content is next to fixed-width elements to avoid a jump in layout when the scrollbar appears.
+
+```tsx
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+export function ScrollAreaNoShift() {
+  return (
+    <ScrollArea scrollbarGutter className="h-64 w-80 rounded-md border p-3">
+      <div className="space-y-2 text-sm">
+        {Array.from({ length: 20 }, (_, i) => (
+          <p key={i} className="text-muted-foreground">
+            Line {i + 1}
+          </p>
+        ))}
+      </div>
+    </ScrollArea>
+  )
+}
+```
+
+<Note>
+  `ScrollArea` sets `size-full min-h-0` on its root element so it adapts to any parent flex or grid context. Always give the parent a constrained height or use `className="h-[value]"` on `ScrollArea` itself.
+</Note>
+
+## Props
+
+### ScrollArea
+
+| Prop              | Type      | Default | Description                                                                         |
+| ----------------- | --------- | ------- | ----------------------------------------------------------------------------------- |
+| `scrollFade`      | `boolean` | `false` | Apply CSS mask fade edges to indicate scrollable overflow                           |
+| `scrollbarGutter` | `boolean` | `false` | Add padding on the overflow axis to prevent layout shift when the scrollbar appears |

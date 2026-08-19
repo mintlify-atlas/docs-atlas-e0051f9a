@@ -1,0 +1,266 @@
+---
+title: "Item Component: Flexible List Row with Media and Actions"
+sidebarTitle: "Item"
+description: "Item is a composable list row component supporting leading media, content, trailing actions, badges, and multiple layout variants for flexible list UIs."
+---
+
+Item is a composable list row built from seven sub-components — `Item`, `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`, and `ItemGroup` — that you combine to produce exactly the layout you need. The `ItemMedia` slot handles leading icons and thumbnails, `ItemContent` arranges the title and description, and `ItemActions` provides a trailing region for buttons, badges, or any control. Three variants and three size options make it suitable for everything from compact command palettes to rich media galleries.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add item
+```
+
+```bash Manual
+npm install @base-ui/react class-variance-authority
+# Then copy the component source into components/ui/item.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import {
+  Item,
+  ItemMedia,
+  ItemContent,
+  ItemActions,
+  ItemGroup,
+  ItemTitle,
+  ItemDescription,
+} from "@/components/ui/item"
+```
+
+```tsx
+<ItemGroup>
+  <Item>
+    <ItemMedia variant="icon">
+      <FileIcon />
+    </ItemMedia>
+    <ItemContent>
+      <ItemTitle>File name</ItemTitle>
+      <ItemDescription>Description text</ItemDescription>
+    </ItemContent>
+    <ItemActions>
+      <Button size="sm">Action</Button>
+    </ItemActions>
+  </Item>
+</ItemGroup>
+```
+
+## Examples
+
+### Basic Items
+
+Simple items with title and description inside a group container.
+
+```tsx
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@/components/ui/item"
+
+export function ItemBasic() {
+  const files = [
+    { name: "design-tokens.json", desc: "Modified 2 hours ago" },
+    { name: "button.tsx", desc: "Modified yesterday" },
+    { name: "card.tsx", desc: "Modified 3 days ago" },
+  ]
+
+  return (
+    <ItemGroup>
+      {files.map((file) => (
+        <Item key={file.name}>
+          <ItemContent>
+            <ItemTitle>{file.name}</ItemTitle>
+            <ItemDescription>{file.desc}</ItemDescription>
+          </ItemContent>
+        </Item>
+      ))}
+    </ItemGroup>
+  )
+}
+```
+
+### With Leading Media
+
+Use `ItemMedia` with `variant="icon"` for SVG icons or `variant="image"` for thumbnails.
+
+```tsx
+import { FileText, Image, Music } from "lucide-react"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+
+export function ItemWithMedia() {
+  return (
+    <ItemGroup>
+      <Item>
+        <ItemMedia variant="icon"><FileText /></ItemMedia>
+        <ItemContent>
+          <ItemTitle>Report Q4.pdf</ItemTitle>
+          <ItemDescription>1.2 MB · PDF document</ItemDescription>
+        </ItemContent>
+      </Item>
+      <Item>
+        <ItemMedia variant="icon"><Image /></ItemMedia>
+        <ItemContent>
+          <ItemTitle>Hero banner.png</ItemTitle>
+          <ItemDescription>3.4 MB · PNG image</ItemDescription>
+        </ItemContent>
+      </Item>
+      <Item>
+        <ItemMedia variant="icon"><Music /></ItemMedia>
+        <ItemContent>
+          <ItemTitle>Podcast episode 12.mp3</ItemTitle>
+          <ItemDescription>42 MB · MP3 audio</ItemDescription>
+        </ItemContent>
+      </Item>
+    </ItemGroup>
+  )
+}
+```
+
+### With Actions and Badges
+
+Combine `ItemActions` with buttons and badges in the trailing slot.
+
+```tsx
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@/components/ui/item"
+
+export function ItemWithActions() {
+  const members = [
+    { name: "Alice Kim", role: "Owner", status: "online" as const },
+    { name: "Bob Lee", role: "Editor", status: "away" as const },
+    { name: "Carol Meyers", role: "Viewer", status: "offline" as const },
+  ]
+
+  return (
+    <ItemGroup>
+      {members.map((member) => (
+        <Item key={member.name}>
+          <ItemContent>
+            <ItemTitle>{member.name}</ItemTitle>
+            <ItemDescription>{member.role}</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Badge
+              variant={
+                member.status === "online"
+                  ? "success-outline"
+                  : member.status === "away"
+                    ? "warning-outline"
+                    : "outline"
+              }
+              shape="pill"
+              size="sm"
+            >
+              {member.status}
+            </Badge>
+            <Button size="icon-sm" variant="ghost">···</Button>
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
+  )
+}
+```
+
+### Variants
+
+Three variants — `default`, `outline`, and `muted` — control the border and background treatment of each row.
+
+```tsx
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from "@/components/ui/item"
+
+export function ItemVariants() {
+  return (
+    <div className="space-y-4">
+      <ItemGroup>
+        <Item variant="default">
+          <ItemContent>
+            <ItemTitle>Default variant</ItemTitle>
+            <ItemDescription>Standard list row</ItemDescription>
+          </ItemContent>
+        </Item>
+      </ItemGroup>
+      <ItemGroup>
+        <Item variant="outline">
+          <ItemContent>
+            <ItemTitle>Outline variant</ItemTitle>
+            <ItemDescription>Bordered list row</ItemDescription>
+          </ItemContent>
+        </Item>
+      </ItemGroup>
+      <ItemGroup>
+        <Item variant="muted">
+          <ItemContent>
+            <ItemTitle>Muted variant</ItemTitle>
+            <ItemDescription>Subtle background row</ItemDescription>
+          </ItemContent>
+        </Item>
+      </ItemGroup>
+    </div>
+  )
+}
+```
+
+## Props
+
+### Item
+
+| Prop      | Type                                | Default     | Description                                     |
+| --------- | ----------------------------------- | ----------- | ----------------------------------------------- |
+| `variant` | `"default" \| "outline" \| "muted"` | `"default"` | Border and background treatment of the item row |
+| `size`    | `"default" \| "sm" \| "xs"`         | `"default"` | Padding and gap scale                           |
+
+### ItemMedia
+
+| Prop      | Type                             | Default     | Description                                                                                   |
+| --------- | -------------------------------- | ----------- | --------------------------------------------------------------------------------------------- |
+| `variant` | `"default" \| "icon" \| "image"` | `"default"` | `"icon"` sizes the SVG; `"image"` adds fixed dimensions and `overflow-hidden` for thumbnails  |
+
+### ItemContent
+
+Flex column container for `ItemTitle` and `ItemDescription`. Accepts standard `div` props.
+
+### ItemTitle
+
+Primary label text for the row. Accepts standard `p`/heading props.
+
+### ItemDescription
+
+Secondary/supporting text below the title. Styled as muted foreground.
+
+### ItemActions
+
+Trailing flex container for controls such as buttons, badges, or icons.
+
+### ItemGroup
+
+Wrapper that groups multiple `Item` rows. Manages borders between adjacent items.

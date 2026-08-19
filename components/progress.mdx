@@ -1,0 +1,155 @@
+---
+title: "Progress: Accessible Bar for Task Completion"
+sidebarTitle: "Progress"
+description: "Progress renders an accessible progress bar built on Base UI's Progress primitive. Shows determinate or indeterminate loading states with animated fill."
+---
+
+Progress is a fully accessible progress indicator built on `@base-ui/react/progress`. It composes five sub-components — `Progress`, `ProgressTrack`, `ProgressIndicator`, `ProgressLabel`, and `ProgressValue` — which you can arrange to show a bare bar, a labelled percentage, or an indeterminate animation for operations with unknown duration. The `value` prop drives both the visual fill and the underlying `aria-valuenow` attribute automatically.
+
+## Installation
+
+<CodeGroup>
+```bash CLI
+npx baseui-cn add progress
+```
+
+```bash Manual
+npm install @base-ui/react
+# Then copy the component source into components/ui/progress.tsx
+```
+</CodeGroup>
+
+## Usage
+
+```tsx
+import {
+  Progress,
+  ProgressTrack,
+  ProgressIndicator,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress"
+```
+
+```tsx
+<Progress value={65}>
+  <ProgressLabel>Uploading</ProgressLabel>
+  <ProgressValue />
+</Progress>
+```
+
+## Examples
+
+### Basic Progress Bar
+
+A minimal progress bar with just a numeric value.
+
+```tsx
+import { Progress } from "@/components/ui/progress"
+
+export function ProgressBasic() {
+  return <Progress value={40} className="w-full" />
+}
+```
+
+### With Label and Value
+
+Show a descriptive label and the computed percentage side by side above the track.
+
+```tsx
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress"
+
+export function ProgressLabelled() {
+  return (
+    <div className="w-80 space-y-1">
+      <Progress value={72}>
+        <ProgressLabel>Storage used</ProgressLabel>
+        <ProgressValue />
+      </Progress>
+    </div>
+  )
+}
+```
+
+### Indeterminate State
+
+Omit `value` (or pass `null`) for an indeterminate animation — useful when the total duration is unknown.
+
+```tsx
+import { Progress, ProgressLabel } from "@/components/ui/progress"
+
+export function ProgressIndeterminate() {
+  return (
+    <div className="w-80">
+      <Progress>
+        <ProgressLabel>Analysing…</ProgressLabel>
+      </Progress>
+    </div>
+  )
+}
+```
+
+### Multiple Tasks
+
+Compose several labelled progress bars to represent parallel upload or processing tasks.
+
+```tsx
+import {
+  Progress,
+  ProgressLabel,
+  ProgressValue,
+} from "@/components/ui/progress"
+
+const tasks = [
+  { name: "design-tokens.json", value: 100 },
+  { name: "button.tsx", value: 68 },
+  { name: "card.tsx", value: 34 },
+]
+
+export function ProgressMultiple() {
+  return (
+    <div className="w-80 space-y-3">
+      {tasks.map((task) => (
+        <Progress key={task.name} value={task.value}>
+          <ProgressLabel>{task.name}</ProgressLabel>
+          <ProgressValue />
+        </Progress>
+      ))}
+    </div>
+  )
+}
+```
+
+<Note>
+  `ProgressValue` renders the current percentage as formatted text (e.g. `72%`) derived directly from the `value` prop passed to `Progress`. You do not need to calculate it manually.
+</Note>
+
+## Props
+
+### Progress
+
+| Prop      | Type               | Default | Description                                                                      |
+| --------- | ------------------ | ------- | -------------------------------------------------------------------------------- |
+| `value`   | `number \| null`   | `null`  | Current progress from `0` to `100`. Omit or pass `null` for indeterminate state  |
+| `min`     | `number`           | `0`     | Minimum value for the progress range                                             |
+| `max`     | `number`           | `100`   | Maximum value for the progress range                                             |
+
+### ProgressLabel
+
+Renders a `<label>` element associated with the progress bar. Accepts standard label props.
+
+### ProgressValue
+
+Renders the formatted percentage value as text. Accepts `ProgressPrimitive.Value.Props`.
+
+### ProgressTrack
+
+The outer track element. Accepts `ProgressPrimitive.Track.Props`.
+
+### ProgressIndicator
+
+The inner filled element. Accepts `ProgressPrimitive.Indicator.Props`.
