@@ -1,7 +1,7 @@
 ---
 title: "Input Component: Text Fields with Addons and States"
 sidebarTitle: "Input"
-description: "Input renders a styled text field with support for disabled, error, and readonly states. Pairs with Field for labels, validation messages, and descriptions."
+description: "Input renders a styled text field with disabled, error, and readonly states. Pairs with Field for accessible labels, descriptions, and validation messages."
 ---
 
 The `Input` component wraps Base UI's `Input` primitive in a styled container that handles focus rings, error borders, disabled opacity, and dark-mode surface colors automatically. It exposes size variants and an `unstyled` escape hatch for use inside `InputGroup` compositions.
@@ -36,7 +36,7 @@ import { Input } from "@/components/ui/input"
 
 ### Sizes
 
-`Input` ships in three sizes. Use `size="sm"` for compact forms, `"default"` / `"md"` for standard layouts, and `"lg"` for prominent search fields or hero inputs.
+`Input` ships in three sizes. Use `size="sm"` for compact forms, `"md"` (the default) for standard layouts, and `"lg"` for prominent search fields or hero inputs.
 
 ```tsx
 import { Input } from "@/components/ui/input"

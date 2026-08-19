@@ -1,10 +1,10 @@
 ---
-title: "Switch: Accessible On/Off Toggle Control"
+title: "Switch: Accessible On/Off Toggle with CSS Transitions"
 sidebarTitle: "Switch"
-description: "Switch renders an accessible on/off toggle built on Base UI's Switch primitive. Supports checked, disabled, and controlled states with smooth CSS transitions."
+description: "Switch renders an accessible on/off toggle built on Base UI's Switch. Supports controlled and uncontrolled checked states with smooth CSS transitions."
 ---
 
-The `Switch` component is built on Base UI's `Switch` primitive and renders a pill-shaped toggle with a sliding thumb. It supports a `label` convenience prop for inline labeling, controlled and uncontrolled checked states, and a disabled state — all with smooth CSS transitions and proper ARIA semantics.
+The `Switch` component is built on Base UI's `Switch` primitive and renders a pill-shaped toggle with a sliding thumb. It supports controlled and uncontrolled checked states, and a disabled state — all with smooth CSS transitions and proper ARIA semantics.
 
 ## Installation
 
@@ -29,14 +29,14 @@ import { Switch } from "@/components/ui/switch"
 ```
 
 ```tsx
-<Switch label="Email notifications" />
+<Switch defaultChecked aria-label="Email notifications" />
 ```
 
 ## Examples
 
 ### With label and description
 
-Use the `label` prop for a simple inline label. For richer layouts with a description line, place the switch alongside custom markup.
+Place the switch alongside custom markup for richer layouts with a description line.
 
 ```tsx
 import { Switch } from "@/components/ui/switch"
@@ -94,8 +94,8 @@ import { Switch } from "@/components/ui/switch"
 export function SwitchDisabled() {
   return (
     <div className="flex flex-col gap-3">
-      <Switch label="Disabled (off)" disabled />
-      <Switch label="Disabled (on)" defaultChecked disabled />
+      <Switch disabled aria-label="Disabled (off)" />
+      <Switch defaultChecked disabled aria-label="Disabled (on)" />
     </div>
   )
 }
@@ -111,10 +111,9 @@ export function SwitchDisabled() {
 | `defaultChecked` | `boolean` | `false` | Uncontrolled initial checked state |
 | `onCheckedChange` | `(checked: boolean) => void` | — | Fires when the checked state changes |
 | `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity |
-| `label` | `string` | — | Convenience prop that renders an inline `<label>` |
 | `name` | `string` | — | Form field name submitted with the form |
 | `required` | `boolean` | `false` | Marks the switch as required in a form |
 
 <Note>
-  When using `label`, the switch and label are automatically associated. For custom label markup, use an `id` on the switch and `htmlFor` on your `<label>`.
+  For accessible labeling, use an `id` on the switch and `htmlFor` on a `<label>` element, or pass `aria-label` / `aria-labelledby` directly to the switch.
 </Note>

@@ -4,7 +4,7 @@ sidebarTitle: "Item"
 description: "Item is a composable list row component supporting leading media, content, trailing actions, badges, and multiple layout variants for flexible list UIs."
 ---
 
-Item is a composable list row built from seven sub-components — `Item`, `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`, and `ItemGroup` — that you combine to produce exactly the layout you need. The `ItemMedia` slot handles leading icons and thumbnails, `ItemContent` arranges the title and description, and `ItemActions` provides a trailing region for buttons, badges, or any control. Three variants and three size options make it suitable for everything from compact command palettes to rich media galleries.
+Item is a composable list row built from ten sub-components — `Item`, `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`, `ItemGroup`, `ItemSeparator`, `ItemHeader`, and `ItemFooter` — that you combine to produce exactly the layout you need. The `ItemMedia` slot handles leading icons and thumbnails, `ItemContent` arranges the title and description, and `ItemActions` provides a trailing region for buttons, badges, or any control. Three variants and three size options make it suitable for everything from compact command palettes to rich media galleries.
 
 ## Installation
 
@@ -28,8 +28,11 @@ import {
   ItemContent,
   ItemActions,
   ItemGroup,
+  ItemSeparator,
   ItemTitle,
   ItemDescription,
+  ItemHeader,
+  ItemFooter,
 } from "@/components/ui/item"
 ```
 
@@ -261,6 +264,18 @@ Secondary/supporting text below the title. Styled as muted foreground.
 
 Trailing flex container for controls such as buttons, badges, or icons.
 
+### ItemHeader
+
+Full-width flex row at the top of an `Item` for placing titles and action controls side by side. Accepts standard `div` props.
+
+### ItemFooter
+
+Full-width flex row at the bottom of an `Item` for secondary information or actions. Accepts standard `div` props.
+
+### ItemSeparator
+
+A horizontal rule between `Item` rows inside an `ItemGroup`. Accepts all props from `Separator`.
+
 ### ItemGroup
 
-Wrapper that groups multiple `Item` rows. Manages borders between adjacent items.
+Wrapper that groups multiple `Item` rows. Manages spacing between adjacent items.

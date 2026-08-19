@@ -4,7 +4,7 @@ sidebarTitle: "Alert"
 description: "Alert displays inline feedback messages with semantic variants for error, warning, info, and success states. Includes title and description sub-components."
 ---
 
-Alert is an inline feedback container that stays visible until the user acts — making it the right choice for authentication failures, form validation summaries, permission warnings, and configuration notices. It composes three sub-components (`Alert`, `AlertTitle`, `AlertDescription`) and pairs naturally with any Lucide icon to reinforce the semantic meaning of the message.
+Alert is an inline feedback container that stays visible until the user acts — making it the right choice for authentication failures, form validation summaries, permission warnings, and configuration notices. It composes four sub-components (`Alert`, `AlertTitle`, `AlertDescription`, `AlertAction`) and pairs naturally with any Lucide icon to reinforce the semantic meaning of the message.
 
 ## Installation
 
@@ -22,7 +22,7 @@ npx baseui-cn add alert
 ## Usage
 
 ```tsx
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Info } from "lucide-react"
 ```
 
@@ -156,3 +156,9 @@ A bold heading inside the alert. Accepts standard heading props.
 ### AlertDescription
 
 Supporting text below the title. Accepts standard `div` props and can contain inline elements or action buttons.
+
+### AlertAction
+
+Optional trailing action slot rendered at the end of the alert row. Use it to place buttons or links alongside the message without nesting them inside `AlertDescription`.
+
+Accepts standard `div` props.

@@ -39,7 +39,9 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverClose,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverDescription,
 } from "@/components/ui/popover"
 ```
 
@@ -70,7 +72,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverClose,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -78,11 +79,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { SlidersHorizontalIcon } from "lucide-react"
 
 export function FilterPopoverExample() {
+  const [open, setOpen] = useState(false)
   const [inStock, setInStock] = useState(false)
   const [onSale, setOnSale] = useState(false)
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         render={
           <Button variant="outline">
@@ -104,8 +106,8 @@ export function FilterPopoverExample() {
           </Label>
         </div>
         <div className="mt-4 flex justify-end gap-2">
-          <PopoverClose render={<Button variant="ghost" size="sm">Reset</Button>} />
-          <PopoverClose render={<Button size="sm">Apply</Button>} />
+          <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>Reset</Button>
+          <Button size="sm" onClick={() => setOpen(false)}>Apply</Button>
         </div>
       </PopoverContent>
     </Popover>
@@ -151,7 +153,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverClose,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 
@@ -163,7 +164,7 @@ export function ControlledPopoverExample() {
       <PopoverTrigger render={<Button variant="outline">Toggle</Button>} />
       <PopoverContent>
         <p className="text-sm mb-3">This popover is controlled externally.</p>
-        <PopoverClose render={<Button size="sm">Got it</Button>} />
+        <Button size="sm" onClick={() => setOpen(false)}>Got it</Button>
       </PopoverContent>
     </Popover>
   )
@@ -184,7 +185,3 @@ export function ControlledPopoverExample() {
 ### PopoverTrigger
 
 Accepts all Base UI `Popover.Trigger` props. Use the `render` prop to supply a custom trigger element.
-
-### PopoverClose
-
-Accepts all Base UI `Popover.Close` props. Use the `render` prop to render a custom close element inside the popover content.

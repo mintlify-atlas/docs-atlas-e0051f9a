@@ -17,7 +17,7 @@ npx baseui-cn update [components...] [options]
 | Flag | Default | Description |
 |---|---|---|
 | `-y, --yes` | `false` | Skip all confirmation prompts |
-| `-a, --all` | `false` | Update all available components in the registry |
+| `-a, --all` | `false` | Update all available components from the registry |
 | `--css <path>` | from config | Stylesheet file to update with theme variables |
 | `-p, --path <path>` | from config | Custom directory where components are installed |
 
@@ -75,7 +75,7 @@ Components to update:
 
 ## Update all components
 
-The `--all` flag fetches every component in the registry and updates each one in sequence:
+The `--all` flag fetches every available component in the registry and updates each one in sequence:
 
 ```bash
 npx baseui-cn update --all

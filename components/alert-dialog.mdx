@@ -1,7 +1,7 @@
 ---
 title: "AlertDialog: Confirmation Modal with Required Action"
 sidebarTitle: "AlertDialog"
-description: "AlertDialog requires explicit user confirmation before a destructive action. Focus is trapped inside and the dialog cannot be dismissed by clicking the backdrop."
+description: "AlertDialog requires explicit confirmation before a destructive action. Focus is trapped inside and the panel cannot be dismissed by clicking outside it."
 ---
 
 AlertDialog is a modal dialog that forces the user to make an explicit choice before proceeding. Unlike the standard Dialog, it cannot be closed by clicking the backdrop or pressing Escape — the user must click either the confirm action or the cancel button. Focus is trapped inside the panel until one of those choices is made. This intentional friction is appropriate for destructive or irreversible operations such as deleting an account, removing data, or publishing content that cannot be unpublished. Use the regular Dialog for non-critical interactions that don't require this level of intent confirmation.

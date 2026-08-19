@@ -1,5 +1,5 @@
 ---
-title: "Toggle and ToggleGroup: Two-State Button Controls"
+title: "Toggle and ToggleGroup: Two-State Button Components"
 sidebarTitle: "Toggle"
 description: "Toggle is a two-state button for on/off actions. ToggleGroup wraps multiple Toggles for single or multi-select toolbar controls like text formatting."
 ---
@@ -124,7 +124,7 @@ export function ToggleSizes() {
 
 ### ToggleGroup for Text Formatting
 
-`ToggleGroup` manages multi-select state across its child items. Pass `variant` and `size` once on the group and all items inherit them.
+`ToggleGroup` manages shared pressed state across its child items. Add `multiple` to allow more than one item to be active at once. Pass `variant` and `size` once on the group and all items inherit them.
 
 ```tsx
 import { Bold, Italic, Strikethrough, Underline } from "lucide-react"
@@ -132,7 +132,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 export function ToggleGroupFormatting() {
   return (
-    <ToggleGroup variant="outline" aria-label="Text formatting">
+    <ToggleGroup multiple variant="outline" aria-label="Text formatting">
       <ToggleGroupItem value="bold" aria-label="Bold">
         <Bold />
       </ToggleGroupItem>
@@ -152,7 +152,7 @@ export function ToggleGroupFormatting() {
 
 ### ToggleGroup Single Select
 
-Set `toggleMultiple={false}` on `ToggleGroup` to allow only one active item at a time — useful for view-mode switchers.
+By default `ToggleGroup` allows only one active item at a time. Pass `multiple` to enable multi-select — useful for view-mode switchers where only one layout can be active.
 
 ```tsx
 import { LayoutGrid, List, Table2 } from "lucide-react"
@@ -195,6 +195,7 @@ export function ToggleGroupViewMode() {
 | `variant`     | `"default" \| "outline"`       | `"default"`    | Inherited by all child `ToggleGroupItem` elements                 |
 | `size`        | `"sm" \| "default" \| "lg"`    | `"default"`    | Inherited by all child `ToggleGroupItem` elements                 |
 | `orientation` | `"horizontal" \| "vertical"`   | `"horizontal"` | Layout direction of the toggle group                              |
+| `multiple`    | `boolean`                      | `false`        | When `true`, multiple items can be pressed simultaneously         |
 
 ### ToggleGroupItem
 

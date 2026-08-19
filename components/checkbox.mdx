@@ -1,7 +1,7 @@
 ---
 title: "Checkbox: Accessible Toggle for Boolean Selections"
 sidebarTitle: "Checkbox"
-description: "Checkbox renders an accessible boolean toggle built on Base UI's Checkbox primitive. Supports indeterminate state, labels, disabled state, and controlled usage."
+description: "Checkbox renders an accessible boolean toggle built on Base UI's Checkbox. Supports indeterminate state, labels, disabled state, and controlled usage."
 ---
 
 The `Checkbox` component is built on Base UI's `Checkbox.Root` primitive and renders a styled toggle that handles checked, unchecked, and indeterminate visual states. It participates in the `Field` context for automatic `aria-invalid` wiring and supports both controlled and uncontrolled usage.
@@ -86,7 +86,7 @@ import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 
 export function CheckboxControlled() {
-  const [checked, setChecked] = useState<boolean | "mixed">(false)
+  const [checked, setChecked] = useState(false)
 
   return (
     <div className="flex items-center gap-2">
@@ -111,13 +111,15 @@ export function CheckboxControlled() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `checked` | `boolean \| "mixed"` | — | Controlled checked state. Use `"mixed"` for the indeterminate indicator |
-| `defaultChecked` | `boolean \| "mixed"` | `false` | Uncontrolled initial checked state |
-| `indeterminate` | `boolean` | `false` | Renders the dash indicator regardless of `checked` |
+| `checked` | `boolean` | — | Controlled checked state |
+| `defaultChecked` | `boolean` | `false` | Uncontrolled initial checked state |
+| `indeterminate` | `boolean` | `false` | Puts the checkbox in a mixed state — renders the dash indicator |
 | `onCheckedChange` | `(checked: boolean) => void` | — | Fires when the checked state changes |
 | `disabled` | `boolean` | `false` | Disables interaction and applies reduced opacity |
+| `readOnly` | `boolean` | `false` | Prevents the user from changing the checked state |
 | `required` | `boolean` | `false` | Marks the checkbox as required in a form |
 | `name` | `string` | — | Form field name submitted with the form |
+| `value` | `string` | — | Value submitted with the form when checked |
 
 <Tip>
   Use `Checkbox` inside a `Field` component to automatically link error states via `aria-invalid` without any extra wiring.

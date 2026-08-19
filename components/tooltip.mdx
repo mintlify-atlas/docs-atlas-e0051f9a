@@ -1,7 +1,7 @@
 ---
-title: "Tooltip: Contextual Info on Hover and Focus"
+title: "Tooltip: Accessible Contextual Info on Hover and Focus"
 sidebarTitle: "Tooltip"
-description: "Tooltip displays contextual information when a trigger is hovered or focused. Built on Base UI's Tooltip primitive with shared portal system and smart positioning."
+description: "Tooltip shows a floating label on hover or focus. Built on Base UI's Tooltip with portal rendering, smart repositioning, and shared delay grouping."
 ---
 
 Tooltip shows a small floating label next to a trigger element when the user hovers over it or focuses it with a keyboard. It is built on Base UI's `Tooltip` primitive and renders into a shared portal, so it always appears above other page content without z-index tuning. Positioning is handled automatically — the tooltip flips to stay within the viewport and can be nudged with `side`, `align`, and offset props. Wrapping multiple tooltips in a single `TooltipProvider` enables instant switching between triggers with no delay gap between sequential hovers.

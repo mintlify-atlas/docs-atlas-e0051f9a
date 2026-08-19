@@ -1,7 +1,7 @@
 ---
 title: "Toast: Temporary Notifications with Stack and Swipe"
 sidebarTitle: "Toast"
-description: "Toast displays stackable temporary notifications using Base UI's Toast primitive. Supports 6 positions, promise integration, action buttons, and type-based variants."
+description: "Toast renders stackable notifications built on Base UI. Supports 6 positions, promise helpers, action buttons, and five semantic type variants with icons."
 ---
 
 Toast renders temporary notification messages that stack, animate, and can be swiped away by the user. It is built on Base UI's `Toast` primitive and is configured once at the application root via `ToastProvider`, after which any component in the tree can call `useToast()` to fire notifications. Toasts support five semantic types (`success`, `error`, `warning`, `info`, `loading`) each with a matching icon and border color, six screen positions, an auto-dismiss timeout, inline action buttons, and a `promise` helper that automatically transitions through loading → success or error states.

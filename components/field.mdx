@@ -31,6 +31,8 @@ import {
   FieldControl,
   FieldDescription,
   FieldError,
+  FieldItem,
+  FieldValidity,
 } from "@/components/ui/field"
 ```
 
@@ -156,13 +158,17 @@ Wraps all field parts. Built on `Field.Root`.
 | `name` | `string` | — | Identifies the field when a form is submitted |
 | `disabled` | `boolean` | `false` | Disables the field and all its controls |
 | `invalid` | `boolean` | — | Marks the field as invalid externally |
-| `validate` | `(value: string) => string \| string[] \| null \| Promise<string \| string[] \| null>` | — | Custom validation function. Return an error string or `null` |
+| `validate` | `(value: string) => string \| string[] \| null` | — | Custom validation function. Return error string(s) or `null` |
 | `validationMode` | `"onSubmit" \| "onBlur" \| "onChange"` | `"onSubmit"` | When to trigger validation |
 | `validationDebounceTime` | `number` | `0` | Debounce in ms for `onChange` validation |
 
 ### FieldLabel
 
 Accessible label auto-associated with the control. Built on `Field.Label`. Accepts all `<label>` HTML attributes.
+
+### FieldItem
+
+A layout wrapper for a single field row. Built on `Field.Item`. Accepts all standard HTML element props.
 
 ### FieldControl
 
@@ -183,6 +189,18 @@ Displays validation errors. Built on `Field.Error`.
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `match` | `"valueMissing" \| "typeMismatch" \| "patternMismatch" \| "tooLong" \| "tooShort" \| "rangeOverflow" \| "rangeUnderflow" \| "stepMismatch" \| "badInput" \| "customError" \| boolean` | — | Which validity state to match before rendering. Omit to show all errors |
+
+### FieldValidity
+
+Render prop component for custom validity UI. Passes the current validity state to its child function.
+
+```tsx
+<FieldValidity>
+  {(state) => (
+    <span>{state.validity.valid ? "Valid" : "Invalid"}</span>
+  )}
+</FieldValidity>
+```
 
 <Note>
   `Field` handles all `aria-describedby` and `aria-invalid` linking automatically. You do not need to manually assign IDs or ARIA attributes to inputs inside a `Field`.
